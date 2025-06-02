@@ -25,4 +25,11 @@ private UserService userService;
 
 
 
+    // 닉네임 중복 체크
+    @GetMapping("/check-nickname")
+    public ResponseEntity<?> checkUsername(@RequestParam String username) {
+        boolean isDuplicate = userService.checkNicknameDuplicate(username);
+        return ResponseEntity.ok(isDuplicate);
+    }
+
 }
