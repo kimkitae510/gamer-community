@@ -1,15 +1,16 @@
 package com.gamercommunity.security.jwt;
 
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.MalformedJwtException;
+import io.jsonwebtoken.UnsupportedJwtException;
 import io.jsonwebtoken.security.Keys;
-import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
-import java.security.Key;
 import java.util.Date;
 
 @Slf4j
@@ -19,17 +20,16 @@ public class JwtTokenProvider {
     @Value("${jwt.secret}")
     private String secretKey;
 
-    private Key key;
+    private SecretKey key;
 
     private static final long ACCESS_TOKEN_EXPIRE_TIME = 1000 * 60 * 30; // 30분
     private static final long REFRESH_TOKEN_EXPIRE_TIME = 1000 * 60 * 60 * 24 * 7; // 7일
 
-
-    @PostConstruct
+    //Secret Key 초기화 및 검증
     public void init() {
         byte[] keyBytes = secretKey.getBytes(StandardCharsets.UTF_8);
 
-        // Secret Key 길이 검증
+
         if (keyBytes.length < 32) {
             throw new IllegalArgumentException(
                     "JWT Secret key must be at least 256 bits (32 bytes). Current length: " + keyBytes.length
@@ -57,11 +57,40 @@ public class JwtTokenProvider {
         Date expiryDate = new Date(now.getTime() + expireTime);
 
         return Jwts.builder()
-                .setSubject(loginId)
-                .setIssuedAt(now)
-                .setExpiration(expiryDate)
-                .signWith(key, SignatureAlgorithm.HS256)
+                .subject(loginId)
+                .issuedAt(now)
+                .expiration(expiryDate)
+                .signWith(key)
                 .compact();
     }
 
+    //JWT 토큰 유효성 검증
+    public boolean validateToken(String token) {
+        try {
+            Jwts.parser()
+                    .verifyWith(key)
+                    .build()
+                    .parseSignedClaims(token);
+            return true;
+        } catch (ExpiredJwtException e) {
+            log.warn("만료된 JWT 토큰입니다.");
+        } catch (UnsupportedJwtException e) {
+            log.warn("지원하지 않는 JWT 토큰입니다.");
+        } catch (MalformedJwtException e) {
+            log.warn("잘못된 JWT 서명입니다.");
+        } catch (IllegalArgumentException e) {
+            log.warn("JWT 토큰이 잘못되었습니다.");
+        }
+        return false;
+    }
+
+    //JWT에서 사용자 정보 추출
+    public String getLoginIdFromToken(String token) {
+        return Jwts.parser()
+                .verifyWith(key)
+                .build()
+                .parseSignedClaims(token)
+                .getPayload()
+                .getSubject();
+    }
 }
