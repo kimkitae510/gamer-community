@@ -22,6 +22,7 @@ public class JwtTokenProvider {
     private Key key;
 
     private static final long ACCESS_TOKEN_EXPIRE_TIME = 1000 * 60 * 30; // 30분
+    private static final long REFRESH_TOKEN_EXPIRE_TIME = 1000 * 60 * 60 * 24 * 7; // 7일
 
 
     @PostConstruct
@@ -42,6 +43,11 @@ public class JwtTokenProvider {
     //Access Token 생성
     public String createToken(String loginId) {
         return createTokenInternal(loginId, ACCESS_TOKEN_EXPIRE_TIME);
+    }
+
+    //Refresh Token 생성
+    public String createRefreshToken(String loginId) {
+        return createTokenInternal(loginId, REFRESH_TOKEN_EXPIRE_TIME);
     }
 
 
