@@ -10,6 +10,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+
 
 @Slf4j
 @Service
@@ -50,5 +52,11 @@ public class AuthService {
         log.info("Access Token 재발급 완료. loginId: {}", loginId);
         
         return TokenResponse.of(newAccessToken, refreshToken);
+    }
+
+    //로그아웃시 토큰삭제
+    public void logout(String loginId) {
+        Optional<RefreshToken> token = refreshTokenRepository.findByLoginId(loginId);
+        token.ifPresent(refreshTokenRepository::delete);
     }
 }
