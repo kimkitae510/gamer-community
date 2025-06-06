@@ -24,6 +24,19 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtTokenProvider jwtTokenProvider;
 
+    //인증필요없는 경로
+    @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
+        String path = request.getRequestURI();
+        return path.startsWith("/api/users/login")
+                || path.startsWith("/api/users/join")
+                || path.startsWith("/api/users/check-id")
+                || path.startsWith("/api/users/check-nickname")
+                || path.startsWith("/api/auth/reissue");
+    }
+
+
+
     @Override
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
