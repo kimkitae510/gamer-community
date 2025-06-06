@@ -44,4 +44,10 @@ public class UserService {
         userRepository.save(user);
     }
 
+    // loginId로 사용자 조회
+    public User getUserByLoginId(String loginId) {
+        return userRepository.findByLoginId(loginId)
+                .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다."));
+    }
+
 }
