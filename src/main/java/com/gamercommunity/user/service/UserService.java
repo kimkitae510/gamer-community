@@ -1,11 +1,16 @@
 package com.gamercommunity.user.service;
 
+import com.gamercommunity.auth.dto.TokenResponse;
+import com.gamercommunity.auth.entity.RefreshToken;
+import com.gamercommunity.auth.repository.RefreshTokenRepository;
+import com.gamercommunity.security.jwt.JwtTokenProvider;
 import com.gamercommunity.user.dto.JoinRequest;
+import com.gamercommunity.user.dto.LoginRequest;
 import com.gamercommunity.user.entity.User;
 import com.gamercommunity.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
 
 
 @Service
@@ -14,6 +19,8 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final JwtTokenProvider jwtTokenProvider;
+    private final RefreshTokenRepository refreshTokenRepository;
 
 
     // 로그인 ID 중복 체크
@@ -49,5 +56,27 @@ public class UserService {
         return userRepository.findByLoginId(loginId)
                 .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다."));
     }
+
+
+    // 로그인
+    public TokenResponse login(LoginRequest loginRequest) {
+        User user = userRepository.findByLoginId(loginRequest.getLoginId())
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 아이디입니다."));
+
+        if (!passwordEncoder.matches(loginRequest.getPassword(), user.getPassword())) {
+            throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
+        }
+
+        String accessToken = jwtTokenProvider.createAccessToken(user.getLoginId());
+        String refreshToken = jwtTokenProvider.createRefreshToken(user.getLoginId());
+
+
+        RefreshToken tokenEntity = new RefreshToken(user.getLoginId(), refreshToken);
+        refreshTokenRepository.save(tokenEntity);
+
+        return new TokenResponse(accessToken, refreshToken);
+
+    }
+
 
 }
