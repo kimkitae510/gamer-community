@@ -5,10 +5,7 @@ import com.gamercommunity.post.dto.PostRequest;
 import com.gamercommunity.post.service.PostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RequiredArgsConstructor
 @RestController
@@ -29,4 +26,13 @@ public class PostController {
         return ResponseEntity.ok(postId);
     }
 
+
+    // 게시글 삭제
+    @DeleteMapping("/{postId}")
+    public ResponseEntity<String> deletePost(@PathVariable Long postId) {
+        String loginId = SecurityUtil.getCurrentLoginId()
+                .orElseThrow(() -> new RuntimeException("로그인 사용자 아님"));
+        postService.deletePost(postId, loginId);
+        return ResponseEntity.ok("게시글이 삭제되었습니다.");
+    }
 }

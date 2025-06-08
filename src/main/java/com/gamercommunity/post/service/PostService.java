@@ -6,6 +6,7 @@ import com.gamercommunity.post.repository.PostRepository;
 import com.gamercommunity.user.entity.User;
 import com.gamercommunity.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,5 +34,17 @@ public class PostService {
         postRepository.save(post);
 
         return post.getId();
+    }
+
+    // 게시글 삭제
+    @Transactional
+    public void deletePost(Long postId, String loginId) {
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new RuntimeException("게시글 없음"));
+
+        if (!post.getAuthor().getLoginId().equals(loginId)) {
+            throw new AccessDeniedException("본인 게시글만 삭제할 수 있습니다.");
+        }
+        postRepository.delete(post);
     }
 }
