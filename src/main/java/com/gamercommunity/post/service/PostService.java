@@ -63,4 +63,15 @@ public class PostService {
 
         return PostResponse.from(post);
     }
+
+    // 게시글 상세 조회 (즉시 DB 업데이트)
+    @Transactional
+    public PostResponse getPost(Long postId) {
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new RuntimeException("게시글 없음"));
+
+        postRepository.incrementViewCount(postId);
+
+        return PostResponse.from(post);
+    }
 }

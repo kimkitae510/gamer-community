@@ -48,6 +48,13 @@ public class PostController {
                 postService.updatePost(postId, postRequest, loginId)
         );
     }
+
+    // 단일 게시글 조회
+    @GetMapping("/{postId}")
+    public ResponseEntity<PostResponse> getPost(@PathVariable Long postId) {
+
+        return ResponseEntity.ok(postService.getPost(postId));
+    }
 }
 
 
