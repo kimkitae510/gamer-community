@@ -1,6 +1,7 @@
 package com.gamercommunity.post.service;
 
 import com.gamercommunity.post.dto.PostRequest;
+import com.gamercommunity.post.dto.PostResponse;
 import com.gamercommunity.post.entity.Post;
 import com.gamercommunity.post.repository.PostRepository;
 import com.gamercommunity.user.entity.User;
@@ -46,5 +47,20 @@ public class PostService {
             throw new AccessDeniedException("본인 게시글만 삭제할 수 있습니다.");
         }
         postRepository.delete(post);
+    }
+
+    // 게시글 수정
+    @Transactional
+    public PostResponse updatePost(Long postId, PostRequest postRequest, String loginId) {
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new RuntimeException("게시글 없음"));
+
+        if (!post.getAuthor().getLoginId().equals(loginId)) {
+            throw new AccessDeniedException("본인 게시글만 수정할 수 있습니다.");
+        }
+
+        post.update(postRequest.getTitle(), postRequest.getContent());
+
+        return PostResponse.from(post);
     }
 }
