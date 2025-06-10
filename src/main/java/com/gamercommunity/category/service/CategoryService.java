@@ -29,4 +29,24 @@ public class CategoryService {
     }
 
 
+    // 자식 카테고리 생성
+    @Transactional
+    public CategoryResponse createChildCategory(CategoryRequest categoryRequest) {
+        Category parent = categoryRepository.findById(categoryRequest.getParentId())
+                .orElseThrow(() -> new IllegalArgumentException("부모 카테고리를 찾을 수 없습니다. id=" + categoryRequest.getParentId()));
+
+        if (parent.getParent() != null) {
+            throw new IllegalArgumentException("자식 카테고리에는 하위 카테고리를 생성할 수 없습니다.");
+        }
+
+        Category category = Category.builder()
+                .name(categoryRequest.getName())
+                .parent(parent)
+                .writable(categoryRequest.isWritable())
+                .build();
+
+        Category saved = categoryRepository.save(category);
+        return CategoryResponse.fromChild(saved);
+    }
+
 }

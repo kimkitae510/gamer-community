@@ -24,11 +24,22 @@ public class CategoryResponse {
     private LocalDateTime createdAt;
 
 
+
     public static CategoryResponse fromParent(Category category) {
         return CategoryResponse.builder()
                 .id(category.getId())
                 .name(category.getName())
                 .writable(category.isWritable())
+                .build();
+    }
+
+
+    public static CategoryResponse fromChild(Category category) {
+        return CategoryResponse.builder()
+                .id(category.getId())
+                .name(category.getName())
+                .writable(category.isWritable())
+                .children(null)
                 .build();
     }
 

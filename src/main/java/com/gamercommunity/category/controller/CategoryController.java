@@ -20,4 +20,12 @@ public class CategoryController {
                                                                  @RequestBody CategoryRequest request) {
         return ResponseEntity.ok(categoryService.createParentCategory(request));
     }
+
+
+    // 자식 카테고리 생성
+    @PostMapping("/parents/{parentId}/children")
+    public ResponseEntity<CategoryResponse> createChildCategory(@PathVariable Long parentId,  @RequestBody CategoryRequest categoryRequest) {
+        categoryRequest.setParentId(parentId);
+        return ResponseEntity.ok(categoryService.createChildCategory(categoryRequest));
+    }
 }
