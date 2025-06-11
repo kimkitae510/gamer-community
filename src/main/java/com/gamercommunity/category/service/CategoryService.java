@@ -9,6 +9,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class CategoryService {
@@ -47,6 +49,15 @@ public class CategoryService {
 
         Category saved = categoryRepository.save(category);
         return CategoryResponse.fromChild(saved);
+    }
+
+    // 게임기종별(ps5,닌텐도,엑스박스 등) 부모 카테고리 목록 조회
+    @Transactional(readOnly = true)
+    public List<CategoryResponse> findParents() {
+        return categoryRepository.findByParentIsNull()
+                .stream()
+                .map(CategoryResponse::fromParent)
+                .toList();
     }
 
 }

@@ -7,6 +7,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 
 @RestController
 @RequestMapping("/api/categories")
@@ -14,6 +16,8 @@ import org.springframework.web.bind.annotation.*;
 public class CategoryController {
 
     private final CategoryService categoryService;
+
+
     // 상위 카테고리 생성
     @PostMapping("/parents")
     public ResponseEntity<CategoryResponse> createParentCategory(@PathVariable Long parentId,
@@ -28,4 +32,11 @@ public class CategoryController {
         categoryRequest.setParentId(parentId);
         return ResponseEntity.ok(categoryService.createChildCategory(categoryRequest));
     }
+
+    // 게임기종별(ps5,닌텐도,엑스박스 등) 부모 카테고리 목록 조회
+    @GetMapping("/parents")
+    public ResponseEntity<List<CategoryResponse>> getParentCategories() {
+        return ResponseEntity.ok(categoryService.findParents());
+    }
+
 }
