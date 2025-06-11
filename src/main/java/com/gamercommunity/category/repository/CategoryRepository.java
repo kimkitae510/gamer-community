@@ -12,6 +12,9 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
     //부모가 없는 카테고리 찾기 = 부모카테고리 찾기
     List<Category> findByParentIsNull();
 
+    //게임기종별 게임목록 최신순
+    List<Category> findByParentIdOrderByCreatedAtDesc(Long parentId);
+
 }
 
 

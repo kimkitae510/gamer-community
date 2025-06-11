@@ -60,4 +60,14 @@ public class CategoryService {
                 .toList();
     }
 
+    // 자식 카테고리(게임기종별 게임들) 리스트 조회
+    @Transactional(readOnly = true)
+    public List<CategoryResponse> findChild(Long parentId) {
+        List<Category> categories = categoryRepository.findByParentIdOrderByCreatedAtDesc(parentId);
+
+        return categories.stream()
+                .map(CategoryResponse::fromChild)
+                .toList();
+    }
+
 }
