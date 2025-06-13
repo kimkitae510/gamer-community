@@ -1,6 +1,7 @@
 package com.gamercommunity.post.controller;
 
 import com.gamercommunity.auth.util.SecurityUtil;
+import com.gamercommunity.exception.custom.UnauthorizedException;
 import com.gamercommunity.post.dto.PostRequest;
 import com.gamercommunity.post.dto.PostResponse;
 import com.gamercommunity.post.service.PostService;
@@ -20,7 +21,7 @@ public class PostController {
     @PostMapping
     public ResponseEntity<Long> createPost(@RequestBody PostRequest request) {
         String loginId = SecurityUtil.getCurrentLoginId()
-                .orElseThrow(() -> new RuntimeException("로그인 사용자 아님"));
+                .orElseThrow(() -> new UnauthorizedException("로그인이 필요합니다."));
 
         Long postId = postService.createPost(request, loginId);
 
@@ -32,7 +33,7 @@ public class PostController {
     @DeleteMapping("/{postId}")
     public ResponseEntity<String> deletePost(@PathVariable Long postId) {
         String loginId = SecurityUtil.getCurrentLoginId()
-                .orElseThrow(() -> new RuntimeException("로그인 사용자 아님"));
+                .orElseThrow(() -> new UnauthorizedException("로그인이 필요합니다."));
         postService.deletePost(postId, loginId);
         return ResponseEntity.ok("게시글이 삭제되었습니다.");
     }
@@ -42,7 +43,7 @@ public class PostController {
     public ResponseEntity<PostResponse> updatePost(@PathVariable Long postId,
                                                    @RequestBody PostRequest postRequest) {
         String loginId = SecurityUtil.getCurrentLoginId()
-                .orElseThrow(() -> new RuntimeException("로그인 사용자 아님"));
+                .orElseThrow(() -> new UnauthorizedException("로그인이 필요합니다."));
 
         return ResponseEntity.ok(
                 postService.updatePost(postId, postRequest, loginId)
@@ -56,5 +57,3 @@ public class PostController {
         return ResponseEntity.ok(postService.getPost(postId));
     }
 }
-
-

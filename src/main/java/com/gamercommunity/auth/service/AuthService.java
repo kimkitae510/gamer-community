@@ -4,6 +4,8 @@ import com.gamercommunity.auth.dto.TokenRequest;
 import com.gamercommunity.auth.dto.TokenResponse;
 import com.gamercommunity.auth.entity.RefreshToken;
 import com.gamercommunity.auth.repository.RefreshTokenRepository;
+import com.gamercommunity.exception.custom.EntityNotFoundException;
+import com.gamercommunity.exception.custom.InvalidRequestException;
 import com.gamercommunity.security.jwt.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -31,12 +33,12 @@ public class AuthService {
 
         // Refresh Token 유효성 검증
         if (!jwtTokenProvider.validateToken(refreshToken)) {
-            throw new IllegalArgumentException("유효하지 않은 Refresh Token입니다.");
+            throw new InvalidRequestException("유효하지 않은 Refresh Token입니다.");
         }
 
         // Refresh Token DB 확인
         RefreshToken tokenInDb = refreshTokenRepository.findByRefreshToken(refreshToken)
-                .orElseThrow(() -> new IllegalArgumentException("DB에 Refresh Token이 없습니다."));
+                .orElseThrow(() -> new EntityNotFoundException("DB에 Refresh Token이 없습니다: " + refreshToken));
 
         // Refresh Token에서 loginId 추출
         String loginId = jwtTokenProvider.getLoginIdFromToken(refreshToken);

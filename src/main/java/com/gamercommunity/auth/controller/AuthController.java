@@ -3,6 +3,7 @@ package com.gamercommunity.auth.controller;
 import com.gamercommunity.auth.dto.TokenRequest;
 import com.gamercommunity.auth.dto.TokenResponse;
 import com.gamercommunity.auth.service.AuthService;
+import com.gamercommunity.exception.custom.UnauthorizedException;
 import com.gamercommunity.security.jwt.JwtTokenProvider;
 import com.gamercommunity.user.entity.User;
 import com.gamercommunity.user.service.UserService;
@@ -37,15 +38,15 @@ public class AuthController {
 
     // 로그아웃
     @PostMapping("/logout")
-    public ResponseEntity<?> logout(@RequestHeader("Authorization") String token) {
+    public ResponseEntity<String> logout(@RequestHeader("Authorization") String token) {
         if (!token.startsWith("Bearer ")) {
-            return ResponseEntity.status(401).body("잘못된 토큰 형식입니다.");
+            throw new UnauthorizedException("잘못된 토큰 형식입니다.");
         }
 
         String accessToken = token.substring(7);
 
         if (!jwtTokenProvider.validateToken(accessToken)) {
-            return ResponseEntity.status(401).body("유효하지 않은 토큰입니다.");
+            throw new UnauthorizedException("유효하지 않은 토큰입니다.");
         }
 
         String loginId = jwtTokenProvider.getLoginIdFromToken(accessToken);
@@ -56,14 +57,14 @@ public class AuthController {
 
     // 인증정보
     @GetMapping("/me")
-    public ResponseEntity<?> getMyInfo(@RequestHeader("Authorization") String token) {
+    public ResponseEntity<Map<String, String>> getMyInfo(@RequestHeader("Authorization") String token) {
         if (!token.startsWith("Bearer ")) {
-            return ResponseEntity.status(401).body(Map.of("error", "잘못된 토큰 형식입니다."));
+            throw new UnauthorizedException("잘못된 토큰 형식입니다.");
         }
 
         String jwt = token.substring(7);
         if (!jwtTokenProvider.validateToken(jwt)) {
-            return ResponseEntity.status(401).body(Map.of("error", "유효하지 않은 토큰입니다."));
+            throw new UnauthorizedException("유효하지 않은 토큰입니다.");
         }
 
         String loginId = jwtTokenProvider.getLoginIdFromToken(jwt);

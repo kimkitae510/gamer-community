@@ -1,5 +1,6 @@
 package com.gamercommunity.post.service;
 
+import com.gamercommunity.exception.custom.EntityNotFoundException;
 import com.gamercommunity.post.dto.PostRequest;
 import com.gamercommunity.post.dto.PostResponse;
 import com.gamercommunity.post.entity.Post;
@@ -24,7 +25,7 @@ public class PostService {
     @Transactional
     public long createPost(PostRequest postRequest, String loginId) {
         User author = userRepository.findByLoginId(loginId)
-                .orElseThrow(() -> new RuntimeException("사용자 없음"));
+                .orElseThrow(() -> new EntityNotFoundException("사용자를 찾을 수 없습니다: " + loginId));
 
         Post post = Post.builder()
                 .author(author)
@@ -41,7 +42,7 @@ public class PostService {
     @Transactional
     public void deletePost(Long postId, String loginId) {
         Post post = postRepository.findById(postId)
-                .orElseThrow(() -> new RuntimeException("게시글 없음"));
+                .orElseThrow(() -> new EntityNotFoundException("게시글을 찾을 수 없습니다. id=" + postId));
 
         if (!post.getAuthor().getLoginId().equals(loginId)) {
             throw new AccessDeniedException("본인 게시글만 삭제할 수 있습니다.");
@@ -53,7 +54,7 @@ public class PostService {
     @Transactional
     public PostResponse updatePost(Long postId, PostRequest postRequest, String loginId) {
         Post post = postRepository.findById(postId)
-                .orElseThrow(() -> new RuntimeException("게시글 없음"));
+                .orElseThrow(() -> new EntityNotFoundException("게시글을 찾을 수 없습니다. id=" + postId));
 
         if (!post.getAuthor().getLoginId().equals(loginId)) {
             throw new AccessDeniedException("본인 게시글만 수정할 수 있습니다.");
@@ -68,7 +69,7 @@ public class PostService {
     @Transactional
     public PostResponse getPost(Long postId) {
         Post post = postRepository.findById(postId)
-                .orElseThrow(() -> new RuntimeException("게시글 없음"));
+                .orElseThrow(() -> new EntityNotFoundException("게시글을 찾을 수 없습니다. id=" + postId));
 
         postRepository.incrementViewCount(postId);
 

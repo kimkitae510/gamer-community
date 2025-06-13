@@ -43,7 +43,7 @@ public class JwtTokenProvider {
 
 
     //Access Token 생성
-    public String createToken(String loginId) {
+    public String createAccessToken(String loginId) {
         return createTokenInternal(loginId, ACCESS_TOKEN_EXPIRE_TIME);
     }
 
