@@ -9,6 +9,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/genres")
 @RequiredArgsConstructor
@@ -28,5 +30,12 @@ public class GenreController {
     public ResponseEntity<Void> deleteGenre(@PathVariable Long id) {
         genreService.deleteGenre(id);
         return ResponseEntity.noContent().build();
+    }
+
+    // 장르 리스트
+    @GetMapping
+    public ResponseEntity<List<GenreResponse>> getAllGenres() {
+        List<GenreResponse> genres = genreService.getAllGenres();
+        return ResponseEntity.ok(genres);
     }
 }

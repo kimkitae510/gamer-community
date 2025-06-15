@@ -10,6 +10,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -40,6 +43,13 @@ public class GenreService {
                 .orElseThrow(() -> new EntityNotFoundException("삭제할 장르 ID 없음"));
 
         genreRepository.delete(genre);
+    }
+
+    // 모든 장르 리스트 조회
+    public List<GenreResponse> getAllGenres() {
+        return genreRepository.findAll().stream()
+                .map(GenreResponse::from)
+                .collect(Collectors.toList());
     }
 }
 
