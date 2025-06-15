@@ -32,6 +32,15 @@ public class GenreController {
         return ResponseEntity.noContent().build();
     }
 
+    // 장르 수정
+    @PutMapping("/{id}")
+    public ResponseEntity<GenreResponse> updateGenre(
+            @PathVariable Long id,
+            @RequestBody @Valid GenreRequest request) {
+        GenreResponse response = genreService.updateGenre(id, request);
+        return ResponseEntity.ok(response);
+    }
+
     // 장르 리스트
     @GetMapping
     public ResponseEntity<List<GenreResponse>> getAllGenres() {

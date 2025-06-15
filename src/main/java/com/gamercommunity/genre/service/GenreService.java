@@ -45,6 +45,25 @@ public class GenreService {
         genreRepository.delete(genre);
     }
 
+
+    // 장르 수정
+    @Transactional
+    public GenreResponse updateGenre(Long genreId, GenreRequest request) {
+        Genre genre = genreRepository.findById(genreId)
+                .orElseThrow(() -> new EntityNotFoundException("수정해야 할 장르 id 존재x"));
+
+        // 다른 장르가 같은 이름을 사용하는지 체크
+        genreRepository.findByName(request.name())
+                .ifPresent(existingGenre -> {
+                    if (!existingGenre.getId().equals(genreId)) {
+                        throw new DuplicateEntityException("같은 이름의 장르 존재");
+                    }
+                });
+
+        genre.updateName(request.name());
+        return GenreResponse.from(genre);
+    }
+
     // 모든 장르 리스트 조회
     public List<GenreResponse> getAllGenres() {
         return genreRepository.findAll().stream()

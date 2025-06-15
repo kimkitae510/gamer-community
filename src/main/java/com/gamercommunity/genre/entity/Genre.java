@@ -42,5 +42,11 @@ public class Genre {
             throw new IllegalArgumentException("장르 이름은 50자를 초과할 수 없습니다.");
         }
     }
+
+    // 장르 이름 수정
+    public void updateName(String name) {
+        validateName(name);
+        this.name = name;
+    }
 }
 
