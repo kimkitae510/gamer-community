@@ -39,11 +39,12 @@ public class CategoryController {
         return ResponseEntity.ok(categoryService.findParents());
     }
 
-    // 장르별 카테고리 목록
-    @GetMapping("/genres/{genreId}")
-    public List<CategoryResponse> getCategoriesByGenre(
-            @RequestParam Long parentId, @PathVariable Long genreId) {
-        return categoryService.findChild(parentId);
+    // 장르별 카테고리 목록 조회
+    @GetMapping("/parents/{parentId}/genres/{genreId}")
+    public ResponseEntity<List<CategoryResponse>> getCategoriesByGenre(
+            @PathVariable Long parentId,
+            @PathVariable Long genreId) {
+        return ResponseEntity.ok(categoryService.getCategoriesByGenre(parentId, genreId));
     }
 
 }

@@ -1,5 +1,6 @@
 package com.gamercommunity.category.entity;
 
+import com.gamercommunity.genre.entity.Genre;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -10,7 +11,9 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -37,14 +40,18 @@ public class Category {
     @OrderBy("id ASC")
     private List<Category> children = new ArrayList<>();
 
+
+    private Set<Genre> genres = new HashSet<>();
+
     @CreatedDate
     private LocalDateTime createdAt;
 
 
     @Builder
-    public Category(String name, boolean writable, Category parent) {
+    public Category(String name, boolean writable, Category parent, Set<Genre> genres) {
         this.name = name;
         this.writable = writable;
+        this.genres = genres != null ? genres : new HashSet<>();
         this.parent = parent;
     }
 

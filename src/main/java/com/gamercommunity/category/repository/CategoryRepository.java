@@ -2,6 +2,8 @@ package com.gamercommunity.category.repository;
 
 import com.gamercommunity.category.entity.Category;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -15,6 +17,16 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
     //게임기종별 게임목록 최신순
     List<Category> findByParentIdOrderByCreatedAtDesc(Long parentId);
 
+
+    // 장르별 카테고리 목록 조회
+    @Query("""
+        SELECT DISTINCT c FROM Category c 
+        LEFT JOIN FETCH c.genres g
+        WHERE c.parent.id = :parentId 
+        AND g.id = :genreId
+        ORDER BY c.createdAt DESC
+    """)
+    List<Category> findByParentIdAndGenreIdWithGenres(@Param("parentId") Long parentId, @Param("genreId") Long genreId);
 }
 
 
