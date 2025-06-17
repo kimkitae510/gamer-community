@@ -1,6 +1,6 @@
 package com.gamercommunity.post.service;
 
-import com.gamercommunity.exception.custom.EntityNotFoundException;
+import com.gamercommunity.global.exception.custom.EntityNotFoundException;
 import com.gamercommunity.post.dto.PostRequest;
 import com.gamercommunity.post.dto.PostResponse;
 import com.gamercommunity.post.entity.Post;

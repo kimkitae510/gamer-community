@@ -3,7 +3,7 @@ package com.gamercommunity.auth.controller;
 import com.gamercommunity.auth.dto.TokenRequest;
 import com.gamercommunity.auth.dto.TokenResponse;
 import com.gamercommunity.auth.service.AuthService;
-import com.gamercommunity.exception.custom.UnauthorizedException;
+import com.gamercommunity.global.exception.custom.UnauthorizedException;
 import com.gamercommunity.security.jwt.JwtTokenProvider;
 import com.gamercommunity.user.entity.User;
 import com.gamercommunity.user.service.UserService;

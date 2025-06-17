@@ -1,4 +1,4 @@
-package com.gamercommunity.gloabal.time;
+package com.gamercommunity.global.time;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.MappedSuperclass;

@@ -1,7 +1,7 @@
 package com.gamercommunity.post.controller;
 
 import com.gamercommunity.auth.util.SecurityUtil;
-import com.gamercommunity.exception.custom.UnauthorizedException;
+import com.gamercommunity.global.exception.custom.UnauthorizedException;
 import com.gamercommunity.post.dto.PostRequest;
 import com.gamercommunity.post.dto.PostResponse;
 import com.gamercommunity.post.service.PostService;

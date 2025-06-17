@@ -1,12 +1,12 @@
-package com.gamercommunity.exception.handler;
+package com.gamercommunity.global.exception.handler;
 
 
-import com.gamercommunity.exception.custom.*;
+import com.gamercommunity.global.exception.custom.*;
+import com.gamercommunity.global.exception.dto.ErrorResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
-import com.gamercommunity.exception.dto.ErrorResponse;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;

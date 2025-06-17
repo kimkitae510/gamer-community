@@ -1,4 +1,4 @@
-package com.gamercommunity.exception.dto;
+package com.gamercommunity.global.exception.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;

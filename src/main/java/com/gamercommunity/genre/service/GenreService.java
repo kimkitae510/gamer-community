@@ -1,7 +1,7 @@
 package com.gamercommunity.genre.service;
 
-import com.gamercommunity.exception.custom.DuplicateEntityException;
-import com.gamercommunity.exception.custom.EntityNotFoundException;
+import com.gamercommunity.global.exception.custom.DuplicateEntityException;
+import com.gamercommunity.global.exception.custom.EntityNotFoundException;
 import com.gamercommunity.genre.dto.GenreRequest;
 import com.gamercommunity.genre.dto.GenreResponse;
 import com.gamercommunity.genre.entity.Genre;

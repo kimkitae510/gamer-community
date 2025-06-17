@@ -1,6 +1,6 @@
 package com.gamercommunity.post.entity;
 
-import com.gamercommunity.gloabal.time.Time;
+import com.gamercommunity.global.time.Time;
 import com.gamercommunity.user.entity.User;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
