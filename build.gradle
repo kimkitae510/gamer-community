@@ -34,6 +34,17 @@ dependencies {
 	implementation 'io.jsonwebtoken:jjwt-api:0.12.3'
 	runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.12.3'
 	runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.12.3'
+
+	// MySQL
+	implementation 'mysql:mysql-connector-java:8.0.32'
+	implementation 'org.springframework.boot:spring-boot-starter-batch'
+	
+	// AWS S3
+	implementation 'software.amazon.awssdk:s3:2.20.26'
+
+	// 테스트
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 	
 	compileOnly 'org.projectlombok:lombok'
 	runtimeOnly 'com.mysql:mysql-connector-j'
