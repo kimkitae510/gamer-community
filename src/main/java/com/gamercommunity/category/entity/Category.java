@@ -40,6 +40,7 @@ public class Category {
     @OrderBy("id ASC")
     private List<Category> children = new ArrayList<>();
 
+    private String imageUrl;
 
     private Set<Genre> genres = new HashSet<>();
 
@@ -48,11 +49,17 @@ public class Category {
 
 
     @Builder
-    public Category(String name, boolean writable, Category parent, Set<Genre> genres) {
+    public Category(String name, boolean writable, Category parent, String imageUrl, Set<Genre> genres) {
         this.name = name;
         this.writable = writable;
         this.genres = genres != null ? genres : new HashSet<>();
+        this.imageUrl = imageUrl;
         this.parent = parent;
+    }
+
+    // 이미지 URL 변경
+    public void changeImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 
 }

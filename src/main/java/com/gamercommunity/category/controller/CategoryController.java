@@ -6,6 +6,7 @@ import com.gamercommunity.category.service.CategoryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -45,6 +46,16 @@ public class CategoryController {
             @PathVariable Long parentId,
             @PathVariable Long genreId) {
         return ResponseEntity.ok(categoryService.getCategoriesByGenre(parentId, genreId));
+    }
+
+    // 자식 카테고리 이미지 파일 업로드
+    @PutMapping("/children/{childCategoryId}/image/upload")
+    public ResponseEntity<String> uploadChildCategoryImage(
+            @PathVariable Long childCategoryId,
+            @RequestParam("image") MultipartFile imageFile) {
+
+        String newImageUrl = categoryService.replaceChildCategoryImage(childCategoryId, imageFile);
+        return ResponseEntity.ok(newImageUrl);
     }
 
 }

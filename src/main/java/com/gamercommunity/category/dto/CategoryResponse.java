@@ -2,6 +2,7 @@ package com.gamercommunity.category.dto;
 
 
 import com.gamercommunity.category.entity.Category;
+import com.gamercommunity.genre.dto.GenreResponse;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -9,6 +10,7 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Getter
 @Builder
@@ -22,6 +24,8 @@ public class CategoryResponse {
     private List<CategoryResponse> children;
     private Double rating;
     private LocalDateTime createdAt;
+    private List<GenreResponse> genres;
+    private String imageUrl;
 
 
 
@@ -39,6 +43,10 @@ public class CategoryResponse {
                 .id(category.getId())
                 .name(category.getName())
                 .writable(category.isWritable())
+                .imageUrl(category.getImageUrl())
+                .genres(category.getGenres().stream()
+                        .map(GenreResponse::from)
+                        .collect(Collectors.toList()))
                 .children(null)
                 .build();
     }
