@@ -102,6 +102,18 @@ public class CategoryService {
                 .toList();
     }
 
+    // 자식 카테고리 장르 수정
+    @Transactional
+    public CategoryResponse updateChildCategoryGenere(Long categoryId, CategoryRequest categoryRequest) {
+        Category category = findChildCategoryById(categoryId);
+
+        // 장르 검증
+        Set<Genre> genres = validateAndGetGenres(categoryRequest.getGenreId());
+        category.updateGenres(genres);
+
+        return CategoryResponse.fromChild(category);
+    }
+
     // 자식 카테고리 이미지 변경
     @Transactional
     public String replaceChildCategoryImage(Long categoryId, MultipartFile newImageFile) {

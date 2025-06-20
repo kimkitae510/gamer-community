@@ -58,4 +58,10 @@ public class CategoryController {
         return ResponseEntity.ok(newImageUrl);
     }
 
+    // 자식 카테고리 장르 수정
+    @PutMapping("/{categoryId}/genres/update")
+    public ResponseEntity<CategoryResponse> updateChildCategoryGenere(@PathVariable Long categoryId, @RequestBody CategoryRequest categoryRequest) {
+        return ResponseEntity.ok(categoryService.updateChildCategoryGenere(categoryId, categoryRequest));
+    }
+
 }

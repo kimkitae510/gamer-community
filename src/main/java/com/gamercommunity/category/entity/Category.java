@@ -62,4 +62,13 @@ public class Category {
         this.imageUrl = imageUrl;
     }
 
+    // 카테고리의 장르 수정
+    public void updateGenres(Set<Genre> genres) {
+        if (genres == null) {
+            throw new IllegalArgumentException("장르 정보는 null일 수 없습니다.");
+        }
+        this.genres.clear();
+        this.genres.addAll(genres);
+    }
+
 }
