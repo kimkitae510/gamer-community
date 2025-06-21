@@ -1,5 +1,6 @@
 package com.gamercommunity.post.entity;
 
+import com.gamercommunity.category.entity.Category;
 import com.gamercommunity.global.time.Time;
 import com.gamercommunity.user.entity.User;
 import jakarta.persistence.*;
@@ -24,6 +25,11 @@ public class Post extends Time {
     @JoinColumn(name = "author_id", nullable = false)
     private User author;
 
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "category_id", nullable = false)
+    private Category category;
+
+
     @Column(nullable = false, length = 200)
     private String title;
 
@@ -31,14 +37,21 @@ public class Post extends Time {
     @Column(nullable = false, columnDefinition = "TEXT")
     private String content;
 
-    @Column(nullable = false)
-    private int views = 0;
+
+    private int views;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 20)
+    private Tag tag;
 
     @Builder
-    public Post(User author, String title, String content) {
+    public Post(User author, String title, String content, Category category, Tag tag) {
         this.author = author;
+        this.category = category;
         this.title = title;
         this.content = content;
+        this.tag = tag;
+        this.views = 0;
     }
 
     // 게시글 수정 메서드

@@ -17,6 +17,7 @@ public class PostResponse {
     private int views;
     private String createdAt;
     private String updatedAt;
+    private String tag;
 
 
     public static PostResponse from(Post post) {
@@ -27,6 +28,7 @@ public class PostResponse {
                 .author(post.getAuthor().getNickname())
                 .authorId(post.getAuthor().getLoginId())
                 .views(post.getViews())
+                .tag(post.getTag().toString())
                 .createdAt(post.getCreatedAt().toString())
                 .updatedAt(post.getUpdatedAt().toString())
                 .build();

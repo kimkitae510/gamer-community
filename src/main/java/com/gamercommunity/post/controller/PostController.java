@@ -4,10 +4,14 @@ import com.gamercommunity.auth.util.SecurityUtil;
 import com.gamercommunity.global.exception.custom.UnauthorizedException;
 import com.gamercommunity.post.dto.PostRequest;
 import com.gamercommunity.post.dto.PostResponse;
+import com.gamercommunity.post.entity.PostSort;
+import com.gamercommunity.post.entity.Tag;
 import com.gamercommunity.post.service.PostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
@@ -55,5 +59,14 @@ public class PostController {
     public ResponseEntity<PostResponse> getPost(@PathVariable Long postId) {
 
         return ResponseEntity.ok(postService.getPost(postId));
+    }
+
+
+    // 카테고리별 게시글 목록
+    @GetMapping("/category/{categoryId}")
+    public ResponseEntity<List<PostResponse>> getPostsByCategory(@PathVariable Long categoryId,
+                                                                 @RequestParam(name ="sort",defaultValue = "LATEST") PostSort postSort,
+                                                                 @RequestParam(name ="tag", required = false) Tag tag) {
+        return ResponseEntity.ok(postService.getPostsByCategoryAndSort(categoryId,postSort,tag));
     }
 }

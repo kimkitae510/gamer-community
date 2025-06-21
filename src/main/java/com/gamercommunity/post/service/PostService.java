@@ -1,9 +1,12 @@
 package com.gamercommunity.post.service;
 
+import com.gamercommunity.category.repository.CategoryRepository;
 import com.gamercommunity.global.exception.custom.EntityNotFoundException;
 import com.gamercommunity.post.dto.PostRequest;
 import com.gamercommunity.post.dto.PostResponse;
 import com.gamercommunity.post.entity.Post;
+import com.gamercommunity.post.entity.PostSort;
+import com.gamercommunity.post.entity.Tag;
 import com.gamercommunity.post.repository.PostRepository;
 import com.gamercommunity.user.entity.User;
 import com.gamercommunity.user.repository.UserRepository;
@@ -12,6 +15,9 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 
 @Service
 @RequiredArgsConstructor
@@ -19,6 +25,7 @@ public class PostService {
 
     private  final UserRepository userRepository;
     private  final PostRepository postRepository;
+    private  final CategoryRepository categoryRepository;
 
 
     // 게시글 작성
@@ -27,10 +34,15 @@ public class PostService {
         User author = userRepository.findByLoginId(loginId)
                 .orElseThrow(() -> new EntityNotFoundException("사용자를 찾을 수 없습니다: " + loginId));
 
+        var category = categoryRepository.findById(postRequest.getCategoryId())
+                .orElseThrow(() -> new EntityNotFoundException("카테고리", postRequest.getCategoryId()));
+
         Post post = Post.builder()
                 .author(author)
+                .category(category)
                 .title(postRequest.getTitle())
                 .content(postRequest.getContent())
+                .tag(postRequest.getTag())
                 .build();
 
         postRepository.save(post);
@@ -75,4 +87,20 @@ public class PostService {
 
         return PostResponse.from(post);
     }
+
+    // 카테고리별 게시글 목록 조회
+    @Transactional(readOnly = true)
+    public List<PostResponse> getPostsByCategoryAndSort(Long categoryId, PostSort postSort, Tag tag) {
+        // 카테고리 존재 확인
+        categoryRepository.findById(categoryId)
+                .orElseThrow(() -> new EntityNotFoundException("카테고리", categoryId));
+
+        // 동적 쿼리로 조회
+        List<Post> posts = postRepository.findByCategoryWithFilters(categoryId, tag, postSort);
+
+        return posts.stream()
+                .map(PostResponse::from)
+                .collect(Collectors.toList());
+    }
+
 }
