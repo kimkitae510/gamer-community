@@ -64,4 +64,10 @@ public class CategoryController {
         return ResponseEntity.ok(categoryService.updateChildCategoryGenere(categoryId, categoryRequest));
     }
 
+    // 자식 카테고리 이름 수정
+    @PutMapping("/{categoryId}/name/update")
+    public ResponseEntity<CategoryResponse> updateChildCategoryName(@PathVariable Long categoryId, @RequestBody CategoryRequest categoryRequest) {
+        return ResponseEntity.ok(categoryService.updateChildCategoryName(categoryId, categoryRequest));
+    }
+
 }

@@ -62,6 +62,14 @@ public class Category {
         this.imageUrl = imageUrl;
     }
 
+    // 이름 수정
+    public void updateName(String name) {
+        if (name == null || name.isBlank()) {
+            throw new IllegalArgumentException("카테고리 이름은 필수입니다.");
+        }
+        this.name = name;
+    }
+
     // 카테고리의 장르 수정
     public void updateGenres(Set<Genre> genres) {
         if (genres == null) {

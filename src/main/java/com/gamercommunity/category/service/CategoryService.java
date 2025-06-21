@@ -114,6 +114,15 @@ public class CategoryService {
         return CategoryResponse.fromChild(category);
     }
 
+    // 자식 카테고리 이름 수정
+    @Transactional
+    public CategoryResponse updateChildCategoryName(Long categoryId, CategoryRequest categoryRequest) {
+        Category category = findChildCategoryById(categoryId);
+        category.updateName(categoryRequest.getName());
+
+        return CategoryResponse.fromChild(category);
+    }
+
     // 자식 카테고리 이미지 변경
     @Transactional
     public String replaceChildCategoryImage(Long categoryId, MultipartFile newImageFile) {
