@@ -16,9 +16,4 @@ public interface PostRepository extends JpaRepository<Post,Long>, PostRepository
     void incrementViewCount(@Param("postId") Long postId);
 
 
-    // 해당 카테고리의 모든 Post 삭제
-    @Modifying
-    @Query("DELETE FROM Post p WHERE p.category.id = :categoryId")
-    void deleteByCategoryId(@Param("categoryId") Long categoryId);
-
 }

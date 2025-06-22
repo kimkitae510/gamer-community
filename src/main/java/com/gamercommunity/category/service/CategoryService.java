@@ -146,13 +146,11 @@ public class CategoryService {
         return newImageUrl;
     }
 
-
     // 자식 카테고리 삭제
     @Transactional
     public void deleteChildrenCategory(Long categoryId) {
         Category category = findChildCategoryById(categoryId);
 
-        postRepository.deleteByCategoryId(categoryId);
         categoryRepository.delete(category);
     }
 
