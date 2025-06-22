@@ -70,4 +70,11 @@ public class CategoryController {
         return ResponseEntity.ok(categoryService.updateChildCategoryName(categoryId, categoryRequest));
     }
 
+    // 자식카테고리 삭제
+    @DeleteMapping("/{categoryId}")
+    public ResponseEntity<String> deleteChildCategory(@PathVariable Long categoryId) {
+        categoryService.deleteChildrenCategory(categoryId);
+        return ResponseEntity.ok("게시글이 삭제되었습니다.");
+    }
+
 }

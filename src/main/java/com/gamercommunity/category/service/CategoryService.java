@@ -10,6 +10,7 @@ import com.gamercommunity.global.exception.custom.EntityNotFoundException;
 import com.gamercommunity.global.exception.custom.InvalidRequestException;
 import com.gamercommunity.genre.entity.Genre;
 import com.gamercommunity.genre.repository.GenreRepository;
+import com.gamercommunity.post.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,6 +27,7 @@ public class CategoryService {
     private final CategoryRepository categoryRepository;
     private final GenreRepository genreRepository;
     private final S3Service s3Service;
+    private final PostRepository postRepository;
 
     // 부모 카테고리 생성
     @Transactional
@@ -143,6 +145,17 @@ public class CategoryService {
 
         return newImageUrl;
     }
+
+
+    // 자식 카테고리 삭제
+    @Transactional
+    public void deleteChildrenCategory(Long categoryId) {
+        Category category = findChildCategoryById(categoryId);
+
+        postRepository.deleteByCategoryId(categoryId);
+        categoryRepository.delete(category);
+    }
+
 
 
 
