@@ -109,7 +109,6 @@ public class CategoryService {
     public CategoryResponse updateChildCategoryGenere(Long categoryId, CategoryRequest categoryRequest) {
         Category category = findChildCategoryById(categoryId);
 
-        // 장르 검증
         Set<Genre> genres = validateAndGetGenres(categoryRequest.getGenreId());
         category.updateGenres(genres);
 
@@ -132,12 +131,10 @@ public class CategoryService {
 
         String oldImageUrl = category.getImageUrl();
 
-        // 기존 이미지 삭제
         if (oldImageUrl != null && !oldImageUrl.isEmpty()) {
             s3Service.deleteFile(oldImageUrl);
         }
 
-        // 새 이미지 업로드
         String newImageUrl = s3Service.uploadFile(newImageFile, "category-images");
 
         category.changeImageUrl(newImageUrl);

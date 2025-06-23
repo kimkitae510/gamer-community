@@ -77,7 +77,7 @@ public class PostService {
         return PostResponse.from(post);
     }
 
-    // 게시글 상세 조회 (즉시 DB 업데이트)
+    // 게시글 상세 조회
     @Transactional
     public PostResponse getPost(Long postId) {
         Post post = postRepository.findById(postId)
@@ -91,11 +91,11 @@ public class PostService {
     // 카테고리별 게시글 목록 조회
     @Transactional(readOnly = true)
     public List<PostResponse> getPostsByCategoryAndSort(Long categoryId, PostSort postSort, Tag tag) {
-        // 카테고리 존재 확인
+
         categoryRepository.findById(categoryId)
                 .orElseThrow(() -> new EntityNotFoundException("카테고리", categoryId));
 
-        // 동적 쿼리로 조회
+
         List<Post> posts = postRepository.findByCategoryWithFilters(categoryId, tag, postSort);
 
         return posts.stream()
