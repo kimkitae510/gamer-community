@@ -1,4 +1,55 @@
 package com.gamercommunity.review.entity;
 
-public class Review {
+import com.gamercommunity.category.entity.Category;
+import com.gamercommunity.global.time.Time;
+import com.gamercommunity.user.entity.User;
+import jakarta.persistence.*;
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
+@Entity
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Table(name = "review")
+public class Review extends Time {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "category_id", nullable = true, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
+    private Category game;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = true, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
+    private User author;
+
+    @Column(nullable = false, length = 1000)
+    private String content;
+
+    @Column(nullable = false)
+    private int rating; // 1~5
+
+    private int likeCount;
+
+    @Builder
+    public Review(Category game, User author, String content, int rating) {
+        validateRating(rating);
+        this.game = game;
+        this.author = author;
+        this.content = content;
+        this.rating = rating;
+        this.likeCount = 0;
+    }
+
+    // 검증 로직
+    private void validateRating(int rating) {
+        if (rating < 1 || rating > 5) {
+            throw new IllegalArgumentException("평점은 1~5 사이여야 합니다.");
+        }
+    }
 }
+

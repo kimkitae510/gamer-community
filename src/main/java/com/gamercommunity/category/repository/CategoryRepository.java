@@ -2,6 +2,7 @@ package com.gamercommunity.category.repository;
 
 import com.gamercommunity.category.entity.Category;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -27,6 +28,32 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
         ORDER BY c.createdAt DESC
     """)
     List<Category> findByParentIdAndGenreIdWithGenres(@Param("parentId") Long parentId, @Param("genreId") Long genreId);
+
+
+    // 평점 재계산 및 업데이트
+    @Modifying(clearAutomatically = true)
+    @Query("""
+        UPDATE Category c
+        SET c.rating = (
+            SELECT COALESCE(AVG(r.rating), 0.0)
+            FROM Review r
+            WHERE r.game.id = :categoryId
+        )
+        WHERE c.id = :categoryId
+    """)
+    void recalculateRating(@Param("categoryId") Long categoryId);
+
+
+
+    // 리뷰 개수 증가
+    @Modifying(clearAutomatically = true)
+    @Query("UPDATE Category c SET c.reviewCount = c.reviewCount + 1 WHERE c.id = :categoryId")
+    void incrementReviewCount(@Param("categoryId") Long categoryId);
+
+
+
 }
+
+
 
 
