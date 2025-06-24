@@ -7,10 +7,7 @@ import com.gamercommunity.review.dto.ReviewResponse;
 import com.gamercommunity.review.service.ReviewService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/reviews")
@@ -28,5 +25,15 @@ public class ReviewController {
 
         ReviewResponse response = reviewService.createReview(request, loginId);
         return ResponseEntity.ok(response);
+    }
+
+    // 리뷰 삭제
+    @DeleteMapping("/{reviewId}")
+    public ResponseEntity<String> deleteReview(@PathVariable Long reviewId) {
+        String loginId = SecurityUtil.getCurrentLoginId()
+                .orElseThrow(() -> new UnauthorizedException("로그인이 필요합니다"));
+
+        reviewService.deleteReview(reviewId, loginId);
+        return ResponseEntity.ok("리뷰가 삭제되었습니다.");
     }
 }

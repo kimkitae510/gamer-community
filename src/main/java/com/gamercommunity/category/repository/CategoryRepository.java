@@ -50,6 +50,11 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
     @Query("UPDATE Category c SET c.reviewCount = c.reviewCount + 1 WHERE c.id = :categoryId")
     void incrementReviewCount(@Param("categoryId") Long categoryId);
 
+    // 리뷰 개수 감소
+    @Modifying(clearAutomatically = true)
+    @Query("UPDATE Category c SET c.reviewCount = CASE WHEN c.reviewCount > 0 THEN c.reviewCount - 1 ELSE 0 END WHERE c.id = :categoryId")
+    void decrementReviewCount(@Param("categoryId") Long categoryId);
+
 
 
 }
