@@ -9,6 +9,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/reviews")
 @RequiredArgsConstructor
@@ -46,5 +48,12 @@ public class ReviewController {
 
         ReviewResponse response = reviewService.updateReview(reviewId, request, loginId);
         return ResponseEntity.ok(response);
+    }
+
+    // 게임별 리뷰 목록
+    @GetMapping("/game/{gameId}")
+    public ResponseEntity<List<ReviewResponse>> getReviewsByGame(@PathVariable Long gameId) {
+        List<ReviewResponse> reviews = reviewService.getReviewsByGame(gameId);
+        return ResponseEntity.ok(reviews);
     }
 }

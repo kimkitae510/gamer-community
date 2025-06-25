@@ -15,6 +15,8 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 
 @Service
 @RequiredArgsConstructor
@@ -84,6 +86,19 @@ public class ReviewService {
         categoryRepository.recalculateRating(review.getGame().getId());
 
         return ReviewResponse.from(review);
+    }
+
+    // 게임별 리뷰 목록 조회
+    @Transactional(readOnly = true)
+    public List<ReviewResponse> getReviewsByGame(Long gameId) {
+        Category game = categoryRepository.findById(gameId)
+                .orElseThrow(() -> new EntityNotFoundException("게임", gameId));
+
+        List<Review> reviews = reviewRepository.findByGameWithAuthor(game);
+
+        return reviews.stream()
+                .map(ReviewResponse::from)
+                .toList();
     }
 
 }
