@@ -9,6 +9,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.Objects;
+
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -51,5 +53,30 @@ public class Review extends Time {
             throw new IllegalArgumentException("평점은 1~5 사이여야 합니다.");
         }
     }
+
+    // 리뷰 수정
+    public void update(String newContent, int newRating) {
+        if (newContent == null || newContent.isBlank()) {
+            throw new IllegalArgumentException("리뷰 내용은 필수입니다.");
+        }
+        validateRating(newRating);
+
+        boolean changed = false;
+
+        if (!Objects.equals(this.content, newContent)) {
+            this.content = newContent;
+            changed = true;
+        }
+
+        if (this.rating != newRating) {
+            this.rating = newRating;
+            changed = true;
+        }
+
+        if (changed) {
+            updateTimestamp();
+        }
+    }
+
 }
 

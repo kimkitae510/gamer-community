@@ -36,4 +36,15 @@ public class ReviewController {
         reviewService.deleteReview(reviewId, loginId);
         return ResponseEntity.ok("리뷰가 삭제되었습니다.");
     }
+
+    // 리뷰 수정
+    @PutMapping("/{reviewId}")
+    public ResponseEntity<ReviewResponse> updateReview(@PathVariable Long reviewId,
+                                                       @RequestBody ReviewRequest request) {
+        String loginId = SecurityUtil.getCurrentLoginId()
+                .orElseThrow(() -> new UnauthorizedException("로그인이 필요합니다"));
+
+        ReviewResponse response = reviewService.updateReview(reviewId, request, loginId);
+        return ResponseEntity.ok(response);
+    }
 }

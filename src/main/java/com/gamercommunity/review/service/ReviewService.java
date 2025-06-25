@@ -69,4 +69,21 @@ public class ReviewService {
         categoryRepository.recalculateRating(gameId);
     }
 
+    // 리뷰 수정
+    @Transactional
+    public ReviewResponse updateReview(Long reviewId, ReviewRequest request, String loginId) {
+        Review review = reviewRepository.findById(reviewId)
+                .orElseThrow(() -> new EntityNotFoundException("리뷰", reviewId));
+
+        if (!review.getAuthor().getLoginId().equals(loginId)) {
+            throw new AccessDeniedException("본인 게시글만 수정할 수 있습니다.");
+        }
+
+        review.update(request.getContent(), request.getRating());
+
+        categoryRepository.recalculateRating(review.getGame().getId());
+
+        return ReviewResponse.from(review);
+    }
+
 }
