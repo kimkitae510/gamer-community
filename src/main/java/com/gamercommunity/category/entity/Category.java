@@ -44,6 +44,11 @@ public class Category {
 
     private Set<Genre> genres = new HashSet<>();
 
+    private Double rating = 0.0;
+
+    private Long reviewCount = 0L;
+
+
     @CreatedDate
     private LocalDateTime createdAt;
 
@@ -55,6 +60,8 @@ public class Category {
         this.genres = genres != null ? genres : new HashSet<>();
         this.imageUrl = imageUrl;
         this.parent = parent;
+        this.rating = 0.0;
+        this.reviewCount = 0L;
     }
 
     // 이미지 URL 변경
