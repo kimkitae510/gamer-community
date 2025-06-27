@@ -13,7 +13,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -60,5 +60,19 @@ public class ReviewLikeService {
                 .likeCount(likeCount != null ? likeCount : 0)
                 .liked(liked)
                 .build();
+    }
+
+    // 리뷰 목록용
+    @Transactional(readOnly = true)
+    public Map<Long, Boolean> getLikeStatus(List<Long> reviewIds, String loginId) {
+        List<Long> likedReviewIdList = reviewLikeRepository.findLikedReviewIds(reviewIds, loginId);
+        Set<Long> likedReviewIds = new HashSet<>(likedReviewIdList); // List → Set 변환
+
+        Map<Long, Boolean> result = new HashMap<>();
+        for (Long reviewId : reviewIds) {
+            result.put(reviewId, likedReviewIds.contains(reviewId)); // O(1) 조회
+        }
+
+        return result;
     }
 }
