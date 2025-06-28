@@ -11,9 +11,21 @@ import org.springframework.stereotype.Repository;
 public interface PostRepository extends JpaRepository<Post,Long>, PostRepositoryCustom {
 
     // 조회수 증가
-    @Modifying
+    @Modifying(clearAutomatically = true)
     @Query("UPDATE Post p SET p.views = p.views + 1 WHERE p.id = :postId")
     void incrementViewCount(@Param("postId") Long postId);
 
+    // 좋아요 수 증가
+    @Modifying(clearAutomatically = true)
+    @Query("UPDATE Post p SET p.likeCount = p.likeCount + 1 WHERE p.id = :postId")
+    void incrementLikeCount(@Param("postId") Long postId);
 
+    // 좋아요 수 감소
+    @Modifying(clearAutomatically = true)
+    @Query("UPDATE Post p SET p.likeCount = CASE WHEN p.likeCount > 0 THEN p.likeCount - 1 ELSE 0 END WHERE p.id = :postId")
+    void decrementLikeCount(@Param("postId") Long postId);
+
+    // likeCount만 조회
+    @Query("SELECT p.likeCount FROM Post p WHERE p.id = :postId")
+    Integer getLikeCount(@Param("postId") Long postId);
 }
