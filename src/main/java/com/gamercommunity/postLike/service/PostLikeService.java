@@ -67,4 +67,22 @@ public class PostLikeService {
     }
 
 
+    // 좋아요 상태 조회
+    @Transactional(readOnly = true)
+    public PostLikeResponse getLikeStatus(Long postId, String loginId) {
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new EntityNotFoundException("게시글", postId));
+
+        User user = userRepository.findByLoginId(loginId)
+                .orElseThrow(() -> new EntityNotFoundException("사용자", "loginId=" + loginId));
+
+        Optional<PostLike> existingLike = postLikeRepository.findByUserAndPost(user, post);
+
+        return PostLikeResponse.builder()
+                .id(postId)
+                .likeCount(post.getLikeCount())
+                .liked(existingLike.isPresent())
+                .build();
+    }
+
 }

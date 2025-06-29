@@ -40,6 +40,8 @@ public class PostService {
         Post post = Post.builder()
                 .author(author)
                 .category(category)
+                .views(0)
+                .likeCount(0)
                 .title(postRequest.getTitle())
                 .content(postRequest.getContent())
                 .tag(postRequest.getTag())
