@@ -40,6 +40,7 @@ public class Post extends Time {
     //반정규화
     private int views;
     private int likeCount;
+    private int commentCount;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 20)
@@ -47,7 +48,7 @@ public class Post extends Time {
 
     @Builder
     public Post(User author, String title, String content, Category category, Tag tag,
-                int views, int likeCount) {
+                int views, int likeCount, int commentCount) {
         this.author = author;
         this.category = category;
         this.title = title;
@@ -55,6 +56,7 @@ public class Post extends Time {
         this.tag = tag;
         this.views = views;
         this.likeCount = likeCount;
+        this.commentCount = commentCount;
     }
 
     // 게시글 수정 메서드

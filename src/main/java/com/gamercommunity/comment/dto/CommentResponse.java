@@ -1,0 +1,42 @@
+package com.gamercommunity.comment.dto;
+
+import lombok.Builder;
+import lombok.Getter;
+
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+
+@Getter
+@Builder
+public class CommentResponse {
+    private Long id;
+    private String content;
+    private String authorName;
+    private String authorId;
+    private String createdAt;
+    private String updatedAt;
+    private List<CommentResponse> children;
+    private String postAuthorName;
+
+
+    public static CommentResponse of(
+            Long id,
+            String content,
+            String authorName,
+            String authorId,
+            LocalDateTime createdAt,
+            LocalDateTime updatedAt
+    ) {
+        return CommentResponse.builder()
+                .id(id)
+                .content(content)
+                .authorName(authorName)
+                .authorId(authorId)
+                .createdAt(createdAt.toString())
+                .updatedAt(updatedAt.toString())
+                .children(new ArrayList<>())
+                .build();
+    }
+}
+

@@ -28,4 +28,9 @@ public interface PostRepository extends JpaRepository<Post,Long>, PostRepository
     // likeCount만 조회
     @Query("SELECT p.likeCount FROM Post p WHERE p.id = :postId")
     Integer getLikeCount(@Param("postId") Long postId);
+
+    // 댓글 수 증가
+    @Modifying
+    @Query("UPDATE Post p SET p.commentCount = p.commentCount + 1 WHERE p.id = :postId")
+    void incrementCommentCount(@Param("postId") Long postId);
 }

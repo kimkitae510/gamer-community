@@ -42,6 +42,7 @@ public class PostService {
                 .category(category)
                 .views(0)
                 .likeCount(0)
+                .commentCount(0)
                 .title(postRequest.getTitle())
                 .content(postRequest.getContent())
                 .tag(postRequest.getTag())
@@ -104,5 +105,4 @@ public class PostService {
                 .map(PostResponse::from)
                 .collect(Collectors.toList());
     }
-
 }
