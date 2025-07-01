@@ -9,6 +9,7 @@ import com.gamercommunity.post.repository.PostRepository;
 import com.gamercommunity.user.entity.User;
 import com.gamercommunity.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -65,6 +66,22 @@ public class CommentService {
         postRepository.incrementCommentCount(post.getId());
 
         return comment.getId();
+    }
+
+    // 댓글 삭제
+    @Transactional
+    public void deleteComment(Long commentId, String loginId) {
+        Comment comment = commentRepository.findById(commentId)
+                .orElseThrow(() -> new EntityNotFoundException("댓글", commentId));
+
+        if (!comment.getAuthor().getLoginId().equals(loginId)) {
+            throw new AccessDeniedException("작성자만 삭제할 수 있습니다");
+        }
+
+        Long postId = comment.getPost().getId();
+
+        postRepository.decrementCommentCount(postId);
+        commentRepository.delete(comment);
     }
 }
 

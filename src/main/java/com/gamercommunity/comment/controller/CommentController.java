@@ -6,10 +6,7 @@ import com.gamercommunity.comment.service.CommentService;
 import com.gamercommunity.global.exception.custom.UnauthorizedException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/comments")
@@ -27,5 +24,13 @@ public class CommentController {
         return ResponseEntity.ok(commentId);
     }
 
+    //댓글삭제
+    @DeleteMapping("/{commentId}")
+    public ResponseEntity<Void> deleteComment(@PathVariable Long commentId) {
+        String loginId = SecurityUtil.getCurrentLoginId()
+                .orElseThrow(() -> new UnauthorizedException("로그인이 필요합니다"));
+        commentService.deleteComment(commentId, loginId);
+        return ResponseEntity.noContent().build();
+    }
 
 }
