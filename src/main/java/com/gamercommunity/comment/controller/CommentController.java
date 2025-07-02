@@ -45,5 +45,4 @@ public class CommentController {
         commentService.updateComment(commentId, dto.getContent(), loginId);
         return ResponseEntity.ok().build();
     }
-
 }

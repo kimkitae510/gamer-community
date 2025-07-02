@@ -84,7 +84,6 @@ public class CommentService {
         commentRepository.delete(comment);
     }
 
-
     // 댓글 수정
     @Transactional
     public void updateComment(Long commentId, String content, String loginId) {
@@ -97,5 +96,6 @@ public class CommentService {
 
         comment.updateContent(content);
     }
+
 }
 
