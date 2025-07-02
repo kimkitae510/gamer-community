@@ -33,4 +33,17 @@ public class CommentController {
         return ResponseEntity.noContent().build();
     }
 
+
+    //댓글수정
+    @PutMapping("/{commentId}")
+    public ResponseEntity<Void> updateComment(
+            @PathVariable Long commentId,
+            @RequestBody CommentRequest dto
+    ) {
+        String loginId = SecurityUtil.getCurrentLoginId()
+                .orElseThrow(() -> new UnauthorizedException("로그인이 필요합니다"));
+        commentService.updateComment(commentId, dto.getContent(), loginId);
+        return ResponseEntity.ok().build();
+    }
+
 }

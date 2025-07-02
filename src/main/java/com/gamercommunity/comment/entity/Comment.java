@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
@@ -54,6 +55,20 @@ public class Comment extends Time {
     public void addChild(Comment child) {
         this.children.add(child);
         child.parent = this;
+    }
+
+    // 댓글 내용 수정
+    public void updateContent(String newContent) {
+        if (newContent == null || newContent.isBlank()) {
+            throw new IllegalArgumentException("댓글 내용은 필수입니다.");
+        }
+
+        boolean changed = !Objects.equals(this.content, newContent);
+
+        if (changed) {
+            this.content = newContent;
+            updateTimestamp();
+        }
     }
 }
 

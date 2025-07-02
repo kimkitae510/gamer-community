@@ -83,5 +83,19 @@ public class CommentService {
         postRepository.decrementCommentCount(postId);
         commentRepository.delete(comment);
     }
+
+
+    // 댓글 수정
+    @Transactional
+    public void updateComment(Long commentId, String content, String loginId) {
+        Comment comment = commentRepository.findById(commentId)
+                .orElseThrow(() -> new EntityNotFoundException("댓글", commentId));
+
+        if (!comment.getAuthor().getLoginId().equals(loginId)) {
+            throw new AccessDeniedException("작성자만 수정할 수 있습니다");
+        }
+
+        comment.updateContent(content);
+    }
 }
 
