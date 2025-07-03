@@ -13,7 +13,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -63,6 +63,21 @@ public class CommentLikeService {
                 .likeCount(likeCount != null ? likeCount : 0)
                 .liked(liked)
                 .build();
+    }
+
+    // 댓글목록 좋아요 상태조회
+    @Transactional(readOnly = true)
+    public Map<Long, Boolean> getLikeStatus(List<Long> commentIds, String loginId) {
+        // User 조회 불필요 - loginId만 사용
+        List<Long> likedCommentIdList = commentLikeRepository.findLikedCommentIds(commentIds, loginId);
+        Set<Long> likedCommentIds = new HashSet<>(likedCommentIdList); // List → Set 변환
+
+        Map<Long, Boolean> result = new HashMap<>();
+        for (Long commentId : commentIds) {
+            result.put(commentId, likedCommentIds.contains(commentId)); // O(1) 조회
+        }
+
+        return result;
     }
 }
 

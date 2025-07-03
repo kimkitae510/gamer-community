@@ -42,6 +42,7 @@ public class Comment extends Time {
     @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comment> children = new ArrayList<>();
 
+    private int likeCount;
 
     @Builder
     public Comment(String content, Post post, User author, Comment parent) {
@@ -49,6 +50,7 @@ public class Comment extends Time {
         this.post = post;
         this.author = author;
         this.parent = parent;
+        this.likeCount = 0;
     }
 
     //자식 댓글 추가

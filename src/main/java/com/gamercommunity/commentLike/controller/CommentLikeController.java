@@ -5,10 +5,10 @@ import com.gamercommunity.commentLike.dto.CommentLikeResponse;
 import com.gamercommunity.commentLike.service.CommentLikeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/comments")
@@ -23,6 +23,14 @@ public class CommentLikeController {
         String loginId = SecurityUtil.getRequiredLoginId();
         CommentLikeResponse commentLikeResponse = commentLikeService.toggleLike(commentId, loginId);
         return ResponseEntity.ok(commentLikeResponse);
+    }
+
+    // 댓글목록 좋아요 상태조회
+    @GetMapping("/like-status")
+    public ResponseEntity<Map<Long, Boolean>> getLikeStatusBulk(@RequestParam List<Long> commentIds) {
+        String loginId = SecurityUtil.getRequiredLoginId();
+        Map<Long, Boolean> likeStatus = commentLikeService.getLikeStatus(commentIds, loginId);
+        return ResponseEntity.ok(likeStatus);
     }
 
 }
