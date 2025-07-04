@@ -2,6 +2,7 @@ package com.gamercommunity.comment.dto;
 
 import lombok.Builder;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -18,7 +19,10 @@ public class CommentResponse {
     private String updatedAt;
     private List<CommentResponse> children;
     private String postAuthorName;
+    private int likeCount;
 
+    @Setter
+    private Boolean isLiked;
 
     public static CommentResponse of(
             Long id,
@@ -26,7 +30,8 @@ public class CommentResponse {
             String authorName,
             String authorId,
             LocalDateTime createdAt,
-            LocalDateTime updatedAt
+            LocalDateTime updatedAt,
+            int likeCount
     ) {
         return CommentResponse.builder()
                 .id(id)
@@ -36,7 +41,8 @@ public class CommentResponse {
                 .createdAt(createdAt.toString())
                 .updatedAt(updatedAt.toString())
                 .children(new ArrayList<>())
+                .likeCount(likeCount)
+                .isLiked(false)
                 .build();
     }
 }
-

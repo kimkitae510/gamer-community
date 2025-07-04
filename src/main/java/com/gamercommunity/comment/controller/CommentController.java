@@ -2,11 +2,14 @@ package com.gamercommunity.comment.controller;
 
 import com.gamercommunity.auth.util.SecurityUtil;
 import com.gamercommunity.comment.dto.CommentRequest;
+import com.gamercommunity.comment.dto.CommentResponse;
 import com.gamercommunity.comment.service.CommentService;
 import com.gamercommunity.global.exception.custom.UnauthorizedException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/comments")
@@ -44,5 +47,14 @@ public class CommentController {
                 .orElseThrow(() -> new UnauthorizedException("로그인이 필요합니다"));
         commentService.updateComment(commentId, dto.getContent(), loginId);
         return ResponseEntity.ok().build();
+    }
+
+
+    //댓글 목록
+    @GetMapping("/{postId}")
+    public ResponseEntity<List<CommentResponse>> getComments(@PathVariable Long postId) {
+        String loginId = SecurityUtil.getCurrentLoginId().orElse(null);
+        List<CommentResponse> comments = commentService.getCommentsByPost(postId, loginId);
+        return ResponseEntity.ok(comments);
     }
 }

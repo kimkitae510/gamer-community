@@ -1,8 +1,10 @@
 package com.gamercommunity.comment.service;
 
 import com.gamercommunity.comment.dto.CommentRequest;
+import com.gamercommunity.comment.dto.CommentResponse;
 import com.gamercommunity.comment.entity.Comment;
 import com.gamercommunity.comment.repository.CommentRepository;
+import com.gamercommunity.commentLike.repository.CommentLikeRepository;
 import com.gamercommunity.global.exception.custom.EntityNotFoundException;
 import com.gamercommunity.post.entity.Post;
 import com.gamercommunity.post.repository.PostRepository;
@@ -13,6 +15,9 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.*;
+import java.util.stream.Collectors;
+
 @Service
 @RequiredArgsConstructor
 public class CommentService {
@@ -20,6 +25,7 @@ public class CommentService {
     private final CommentRepository commentRepository;
     private final PostRepository postRepository;
     private final UserRepository userRepository;
+    private final CommentLikeRepository commentLikeRepository;
 
     // 댓글 작성
     @Transactional
@@ -67,6 +73,71 @@ public class CommentService {
 
         return comment.getId();
     }
+
+    // 게시글의 댓글 트리 조회
+    @Transactional(readOnly = true)
+    public List<CommentResponse> getCommentsByPost(Long postId, String loginId) {
+        List<Comment> allComments = commentRepository.findByPostIdWithAuthor(postId);
+
+        if (allComments.isEmpty()) {
+            return new ArrayList<>();
+        }
+
+        Map<Long, CommentResponse> dtoMap = new HashMap<>();
+        for (Comment c : allComments) {
+            CommentResponse dto = CommentResponse.of(
+                    c.getId(),
+                    c.getContent(),
+                    c.getAuthor().getNickname(),
+                    c.getAuthor().getLoginId(),
+                    c.getCreatedAt(),
+                    c.getUpdatedAt(),
+                    c.getLikeCount()
+            );
+            dtoMap.put(c.getId(), dto);
+        }
+
+        // 좋아요 정보 일괄 조회
+        if (loginId != null) {
+            try {
+                List<Long> commentIds = allComments.stream()
+                        .map(Comment::getId)
+                        .collect(Collectors.toList());
+
+
+                List<Long> likedCommentIdList = commentLikeRepository.findLikedCommentIds(commentIds, loginId);
+                Set<Long> likedCommentIds = new HashSet<>(likedCommentIdList);
+
+
+                dtoMap.values().forEach(dto ->
+                        dto.setIsLiked(likedCommentIds.contains(dto.getId()))
+                );
+            } catch (Exception e) {
+                System.err.println("좋아요 정보 조회 실패: " + e.getMessage());
+            }
+        }
+
+        // 댓글 트리 2단계
+        List<CommentResponse> result = new ArrayList<>();
+        for (Comment c : allComments) {
+            CommentResponse dto = dtoMap.get(c.getId());
+            if (dto == null) continue;
+
+            if (c.getParent() == null) {
+                // 원본 댓글
+                result.add(dto);
+            } else {
+                // 대댓글
+                CommentResponse parentDto = dtoMap.get(c.getParent().getId());
+                if (parentDto != null) {
+                    parentDto.getChildren().add(dto);
+                }
+            }
+        }
+
+        return result;
+    }
+
 
     // 댓글 삭제
     @Transactional

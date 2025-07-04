@@ -6,6 +6,8 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.List;
+
 public interface CommentRepository extends JpaRepository<Comment,Long> {
 
     // 좋아요 수 증가
@@ -21,5 +23,8 @@ public interface CommentRepository extends JpaRepository<Comment,Long> {
     // likeCount 조회
     @Query("SELECT c.likeCount FROM Comment c WHERE c.id = :commentId")
     Integer getLikeCount(@Param("commentId") Long commentId);
+
+    @Query("SELECT c FROM Comment c JOIN FETCH c.author WHERE c.post.id = :postId")
+    List<Comment> findByPostIdWithAuthor(@Param("postId") Long postId);
 }
 
