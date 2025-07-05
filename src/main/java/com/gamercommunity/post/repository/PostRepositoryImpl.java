@@ -56,6 +56,8 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
             case LATEST -> post.createdAt.desc();
             case OLDEST -> post.createdAt.asc();
             case VIEWED -> post.views.desc().nullsLast();
+            case LIKED -> post.likeCount.desc().nullsLast();
+            case COMMENTED -> post.commentCount.desc().nullsLast();
 
         };
     }
