@@ -8,6 +8,7 @@ import com.gamercommunity.post.entity.Post;
 import com.gamercommunity.post.entity.PostSort;
 import com.gamercommunity.post.entity.Tag;
 import com.gamercommunity.post.repository.PostRepository;
+import com.gamercommunity.postLike.repository.PostLikeRepository;
 import com.gamercommunity.user.entity.User;
 import com.gamercommunity.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +27,7 @@ public class PostService {
     private  final UserRepository userRepository;
     private  final PostRepository postRepository;
     private  final CategoryRepository categoryRepository;
+    private  final PostLikeRepository postLikeRepository;
 
 
     // 게시글 작성
@@ -63,6 +65,7 @@ public class PostService {
             throw new AccessDeniedException("본인 게시글만 삭제할 수 있습니다.");
         }
         postRepository.delete(post);
+        postLikeRepository.deleteByPostId(postId);
     }
 
     // 게시글 수정
