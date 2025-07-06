@@ -48,6 +48,9 @@ public class Category {
 
     private Long reviewCount = 0L;
 
+    // 게시글 수 (반정규화)
+    private Long postCount = 0L;
+
 
     @CreatedDate
     private LocalDateTime createdAt;
@@ -62,6 +65,7 @@ public class Category {
         this.parent = parent;
         this.rating = 0.0;
         this.reviewCount = 0L;
+        this.postCount = 0L;
     }
 
     // 이미지 URL 변경

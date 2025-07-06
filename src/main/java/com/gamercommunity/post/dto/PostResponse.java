@@ -14,9 +14,12 @@ public class PostResponse {
     private String content;
     private String author;
     private String authorId;
+    private Long categoryId;
     private int views;
     private String createdAt;
     private String updatedAt;
+    private int likeCount;
+    private int commentCount;
     private String tag;
 
 
@@ -27,10 +30,13 @@ public class PostResponse {
                 .content(post.getContent())
                 .author(post.getAuthor().getNickname())
                 .authorId(post.getAuthor().getLoginId())
+                .categoryId(post.getCategory().getId())
+                .commentCount(post.getCommentCount())
+                .likeCount(post.getLikeCount())
                 .views(post.getViews())
-                .tag(post.getTag().toString())
                 .createdAt(post.getCreatedAt().toString())
                 .updatedAt(post.getUpdatedAt().toString())
+                .tag(post.getTag().toString())
                 .build();
     }
 }

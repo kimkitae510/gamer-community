@@ -1,5 +1,6 @@
 package com.gamercommunity.post.service;
 
+import com.gamercommunity.category.entity.Category;
 import com.gamercommunity.category.repository.CategoryRepository;
 import com.gamercommunity.global.exception.custom.EntityNotFoundException;
 import com.gamercommunity.post.dto.PostRequest;
@@ -36,7 +37,7 @@ public class PostService {
         User author = userRepository.findByLoginId(loginId)
                 .orElseThrow(() -> new EntityNotFoundException("사용자를 찾을 수 없습니다: " + loginId));
 
-        var category = categoryRepository.findById(postRequest.getCategoryId())
+        Category category = categoryRepository.findById(postRequest.getCategoryId())
                 .orElseThrow(() -> new EntityNotFoundException("카테고리", postRequest.getCategoryId()));
 
         Post post = Post.builder()
