@@ -44,11 +44,9 @@ public class Category {
 
     private Set<Genre> genres = new HashSet<>();
 
+    //반정규화 컬럼
     private Double rating = 0.0;
-
     private Long reviewCount = 0L;
-
-    // 게시글 수 (반정규화)
     private Long postCount = 0L;
 
 

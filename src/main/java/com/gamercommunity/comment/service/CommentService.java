@@ -151,6 +151,7 @@ public class CommentService {
 
         Long postId = comment.getPost().getId();
 
+        commentLikeRepository.deleteByCommentId(commentId);
         postRepository.decrementCommentCount(postId);
         commentRepository.delete(comment);
     }

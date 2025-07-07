@@ -37,7 +37,7 @@ public class Post extends Time {
     @Column(nullable = false, columnDefinition = "TEXT")
     private String content;
 
-    //반정규화
+    //반정규화 컬럼
     private int views;
     private int likeCount;
     private int commentCount;

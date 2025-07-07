@@ -4,6 +4,7 @@ import com.gamercommunity.comment.entity.Comment;
 import com.gamercommunity.commentLike.entity.CommentLike;
 import com.gamercommunity.user.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -22,5 +23,10 @@ public interface CommentLikeRepository extends JpaRepository<CommentLike, Long> 
         WHERE cl.comment.id IN :commentIds AND cl.user.loginId = :loginId
     """)
     List<Long> findLikedCommentIds(@Param("commentIds") List<Long> commentIds, @Param("loginId") String loginId);
+
+    // Comment 삭제 시 해당 댓글의 모든 좋아요 삭제
+    @Modifying
+    @Query("DELETE FROM CommentLike cl WHERE cl.comment.id = :commentId")
+    void deleteByCommentId(@Param("commentId") Long commentId);
 
 }
