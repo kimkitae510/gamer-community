@@ -1,5 +1,6 @@
 package com.gamercommunity.comment.entity;
 
+import com.gamercommunity.common.enums.ContentStatus;
 import com.gamercommunity.global.time.Time;
 import com.gamercommunity.post.entity.Post;
 import com.gamercommunity.user.entity.User;
@@ -44,6 +45,10 @@ public class Comment extends Time {
 
     private int likeCount;
 
+    @Enumerated(EnumType.ORDINAL)
+    @Column(nullable = false)
+    private ContentStatus status;
+
     @Builder
     public Comment(String content, Post post, User author, Comment parent) {
         this.content = content;
@@ -51,6 +56,7 @@ public class Comment extends Time {
         this.author = author;
         this.parent = parent;
         this.likeCount = 0;
+        this.status = ContentStatus.ACTIVE;
     }
 
     //자식 댓글 추가
@@ -71,6 +77,11 @@ public class Comment extends Time {
             this.content = newContent;
             updateTimestamp();
         }
+    }
+
+    // 소프트 삭제 (원본 데이터 유지, status만 변경)
+    public void softDelete() {
+        this.status = ContentStatus.DELETED;
     }
 }
 

@@ -139,7 +139,7 @@ public class CommentService {
     }
 
 
-    // 댓글 삭제
+    // 댓글 삭제 (소프트 삭제)
     @Transactional
     public void deleteComment(Long commentId, String loginId) {
         Comment comment = commentRepository.findById(commentId)
@@ -149,11 +149,9 @@ public class CommentService {
             throw new AccessDeniedException("작성자만 삭제할 수 있습니다");
         }
 
-        Long postId = comment.getPost().getId();
-
-        commentLikeRepository.deleteByCommentId(commentId);
-        postRepository.decrementCommentCount(postId);
-        commentRepository.delete(comment);
+        // 소프트 삭제 (실제로 삭제하지 않음)
+        comment.softDelete();
+        // 좋아요와 카운트는 유지
     }
 
     // 댓글 수정
