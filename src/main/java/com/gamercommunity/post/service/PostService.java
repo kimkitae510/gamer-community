@@ -56,7 +56,7 @@ public class PostService {
         return post.getId();
     }
 
-    // 게시글 삭제
+    // 게시글 삭제 (소프트 삭제)
     @Transactional
     public void deletePost(Long postId, String loginId) {
         Post post = postRepository.findById(postId)
@@ -65,8 +65,10 @@ public class PostService {
         if (!post.getAuthor().getLoginId().equals(loginId)) {
             throw new AccessDeniedException("본인 게시글만 삭제할 수 있습니다.");
         }
-        postRepository.delete(post);
-        postLikeRepository.deleteByPostId(postId);
+        
+        // 소프트 삭제
+        post.softDelete();
+        // postLikeRepository.deleteByPostId(postId); // 좋아요는 유지
     }
 
     // 게시글 수정
