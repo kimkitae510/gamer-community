@@ -1,6 +1,7 @@
 package com.gamercommunity.review.entity;
 
 import com.gamercommunity.category.entity.Category;
+import com.gamercommunity.common.enums.ContentStatus;
 import com.gamercommunity.global.time.Time;
 import com.gamercommunity.user.entity.User;
 import jakarta.persistence.*;
@@ -37,6 +38,10 @@ public class Review extends Time {
 
     private int likeCount;
 
+    @Enumerated(EnumType.ORDINAL)
+    @Column(nullable = false)
+    private ContentStatus status;
+
     @Builder
     public Review(Category game, User author, String content, int rating) {
         validateRating(rating);
@@ -45,6 +50,7 @@ public class Review extends Time {
         this.content = content;
         this.rating = rating;
         this.likeCount = 0;
+        this.status = ContentStatus.ACTIVE;
     }
 
     // 검증 로직
@@ -76,6 +82,11 @@ public class Review extends Time {
         if (changed) {
             updateTimestamp();
         }
+    }
+
+    // 소프트 삭제 (원본 데이터 유지, status만 변경)
+    public void softDelete() {
+        this.status = ContentStatus.DELETED;
     }
 
 }

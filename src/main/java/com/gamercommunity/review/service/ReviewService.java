@@ -55,7 +55,7 @@ public class ReviewService {
         return ReviewResponse.from(review);
     }
 
-    // 리뷰 삭제
+    // 리뷰 삭제 (소프트 삭제)
     @Transactional
     public void deleteReview(Long reviewId, String loginId) {
         Review review = reviewRepository.findById(reviewId)
@@ -64,11 +64,15 @@ public class ReviewService {
         if (!review.getAuthor().getLoginId().equals(loginId)) {
             throw new AccessDeniedException("본인 리뷰만 삭제할 수 있습니다.");
         }
+        
         Long gameId = review.getGame().getId();
-        reviewRepository.delete(review);
-
-        categoryRepository.decrementReviewCount(gameId);
+        
+        // 소프트 삭제
+        review.softDelete();
+        
+        // 평점 재계산 (삭제된 리뷰는 평점에서 제외되어야 함)
         categoryRepository.recalculateRating(gameId);
+        // 리뷰 카운트는 유지 (또는 decrementReviewCount 호출)
     }
 
     // 리뷰 수정
