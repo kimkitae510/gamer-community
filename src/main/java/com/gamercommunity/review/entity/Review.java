@@ -10,6 +10,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -30,11 +32,18 @@ public class Review extends Time {
     @JoinColumn(name = "user_id", nullable = true, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
     private User author;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "parent_id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
+    private Review parent;
+
+    @OneToMany(mappedBy = "parent")
+    private List<Review> children = new ArrayList<>();
+
     @Column(nullable = false, length = 1000)
     private String content;
 
-    @Column(nullable = false)
-    private int rating; // 1~5
+    @Column(nullable = true)
+    private Integer rating; // 1~5 (원본 리뷰만, 대댓글은 null)
 
     private int likeCount;
 
@@ -43,29 +52,37 @@ public class Review extends Time {
     private ContentStatus status;
 
     @Builder
-    public Review(Category game, User author, String content, int rating) {
-        validateRating(rating);
+    public Review(Category game, User author, String content, Integer rating, Review parent) {
+        // 원본 리뷰는 rating 필수
+        if (parent == null && rating != null) {
+            validateRating(rating);
+        }
         this.game = game;
         this.author = author;
         this.content = content;
         this.rating = rating;
+        this.parent = parent;
         this.likeCount = 0;
         this.status = ContentStatus.ACTIVE;
     }
 
     // 검증 로직
-    private void validateRating(int rating) {
-        if (rating < 1 || rating > 5) {
+    private void validateRating(Integer rating) {
+        if (rating != null && (rating < 1 || rating > 5)) {
             throw new IllegalArgumentException("평점은 1~5 사이여야 합니다.");
         }
     }
 
-    // 리뷰 수정
-    public void update(String newContent, int newRating) {
+    // 리뷰 수정 (원본 리뷰만)
+    public void update(String newContent, Integer newRating) {
         if (newContent == null || newContent.isBlank()) {
             throw new IllegalArgumentException("리뷰 내용은 필수입니다.");
         }
-        validateRating(newRating);
+        
+        // 원본 리뷰만 평점 수정 가능
+        if (this.parent == null) {
+            validateRating(newRating);
+        }
 
         boolean changed = false;
 
@@ -74,7 +91,7 @@ public class Review extends Time {
             changed = true;
         }
 
-        if (this.rating != newRating) {
+        if (this.parent == null && !Objects.equals(this.rating, newRating)) {
             this.rating = newRating;
             changed = true;
         }
@@ -82,6 +99,26 @@ public class Review extends Time {
         if (changed) {
             updateTimestamp();
         }
+    }
+
+    // 대댓글 내용만 수정 (평점 없음)
+    public void updateContent(String newContent) {
+        if (newContent == null || newContent.isBlank()) {
+            throw new IllegalArgumentException("리뷰 내용은 필수입니다.");
+        }
+
+        boolean changed = !Objects.equals(this.content, newContent);
+
+        if (changed) {
+            this.content = newContent;
+            updateTimestamp();
+        }
+    }
+
+    // 자식 리뷰 추가
+    public void addChild(Review child) {
+        this.children.add(child);
+        child.parent = this;
     }
 
     // 소프트 삭제 (원본 데이터 유지, status만 변경)

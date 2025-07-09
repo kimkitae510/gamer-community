@@ -15,7 +15,8 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
     @Query("SELECT r FROM Review r JOIN FETCH r.author WHERE r.game = :game")
     List<Review> findByGameWithAuthor(@Param("game") Category game);
 
-    boolean existsByAuthorAndGame(User author, Category game);
+    // 원본 리뷰만 확인 (평점이 있는 리뷰)
+    boolean existsByAuthorAndGameAndParentIsNull(User author, Category game);
 
     // 좋아요 수 증가
     @Modifying(clearAutomatically = true)

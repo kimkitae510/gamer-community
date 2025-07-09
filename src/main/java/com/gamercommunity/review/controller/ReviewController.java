@@ -50,10 +50,13 @@ public class ReviewController {
         return ResponseEntity.ok(response);
     }
 
-    // 게임별 리뷰 목록
+    // 게임별 리뷰 목록 조회 (로그인 선택)
     @GetMapping("/game/{gameId}")
     public ResponseEntity<List<ReviewResponse>> getReviewsByGame(@PathVariable Long gameId) {
-        List<ReviewResponse> reviews = reviewService.getReviewsByGame(gameId);
+        // 로그인 선택 - 로그인하면 좋아요 정보 포함, 안 하면 null
+        String loginId = SecurityUtil.getCurrentLoginId().orElse(null);
+        
+        List<ReviewResponse> reviews = reviewService.getReviewsByGame(gameId, loginId);
         return ResponseEntity.ok(reviews);
     }
 }
