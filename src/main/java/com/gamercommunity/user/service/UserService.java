@@ -47,7 +47,7 @@ public class UserService {
         }
 
         String encodedPassword = passwordEncoder.encode(joinRequest.getPassword());
-        User user = joinRequest.toEntity(encodedPassword);
+        User user = User.from(joinRequest, encodedPassword);
         userRepository.save(user);
     }
 

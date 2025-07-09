@@ -1,5 +1,6 @@
 package com.gamercommunity.user.entity;
 
+import com.gamercommunity.user.dto.JoinRequest;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -29,5 +30,14 @@ public class User {
     @Column(nullable = false)
     private Grade grade;
 
+    // 회원가입
+    public static User from(JoinRequest request, String encodedPassword) {
+        return User.builder()
+                .loginId(request.getLoginId())
+                .password(encodedPassword)
+                .nickname(request.getUsername())
+                .grade(Grade.LEVEL1)
+                .build();
+    }
 
 }
