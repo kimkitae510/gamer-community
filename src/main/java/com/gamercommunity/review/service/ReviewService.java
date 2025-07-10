@@ -103,11 +103,11 @@ public class ReviewService {
         
         Long gameId = review.getGame().getId();
 
-
         review.softDelete();
 
-        // 원본 리뷰만 평점 재계산
+        // 원본 리뷰만 카운트 감소 및 평점 재계산
         if (review.getParent() == null) {
+            categoryRepository.decrementReviewCount(gameId);
             categoryRepository.recalculateRating(gameId);
         }
     }
@@ -146,7 +146,6 @@ public class ReviewService {
             return new ArrayList<>();
         }
 
-        // Review -> ReviewResponse 변환
         Map<Long, ReviewResponse> dtoMap = new HashMap<>();
         for (Review r : allReviews) {
             ReviewResponse dto = ReviewResponse.of(
@@ -163,7 +162,7 @@ public class ReviewService {
             dtoMap.put(r.getId(), dto);
         }
 
-        // 좋아요 정보 일괄 조회
+        // 로그인시 좋아요 정보 일괄 조회
         if (loginId != null && !loginId.isBlank()) {
             try {
                 List<Long> reviewIds = allReviews.stream()

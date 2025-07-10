@@ -43,7 +43,7 @@ public class Review extends Time {
     private String content;
 
     @Column(nullable = true)
-    private Integer rating; // 1~5 (원본 리뷰만, 대댓글은 null)
+    private Integer rating; // 1~5
 
     private int likeCount;
 
@@ -53,7 +53,6 @@ public class Review extends Time {
 
     @Builder
     public Review(Category game, User author, String content, Integer rating, Review parent) {
-        // 원본 리뷰는 rating 필수
         if (parent == null && rating != null) {
             validateRating(rating);
         }
@@ -73,13 +72,12 @@ public class Review extends Time {
         }
     }
 
-    // 리뷰 수정 (원본 리뷰만)
+    // 리뷰 수정
     public void update(String newContent, Integer newRating) {
         if (newContent == null || newContent.isBlank()) {
             throw new IllegalArgumentException("리뷰 내용은 필수입니다.");
         }
-        
-        // 원본 리뷰만 평점 수정 가능
+
         if (this.parent == null) {
             validateRating(newRating);
         }
@@ -101,7 +99,7 @@ public class Review extends Time {
         }
     }
 
-    // 대댓글 내용만 수정 (평점 없음)
+    // 대댓글 내용만 수정
     public void updateContent(String newContent) {
         if (newContent == null || newContent.isBlank()) {
             throw new IllegalArgumentException("리뷰 내용은 필수입니다.");
@@ -121,7 +119,7 @@ public class Review extends Time {
         child.parent = this;
     }
 
-    // 소프트 삭제 (원본 데이터 유지, status만 변경)
+    // 원본 데이터 유지 status만 변경
     public void softDelete() {
         this.status = ContentStatus.DELETED;
     }
