@@ -23,7 +23,7 @@ public class GenreService {
     // 장르 추가
     @Transactional
     public GenreResponse createGenre(GenreRequest request) {
-        // 중복 체크
+
         if (genreRepository.findByName(request.name()).isPresent()) {
             throw new DuplicateEntityException("추가하려는 장르중복");
         }

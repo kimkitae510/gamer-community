@@ -10,7 +10,6 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Getter
 @Builder
@@ -38,15 +37,13 @@ public class CategoryResponse {
     }
 
 
-    public static CategoryResponse fromChild(Category category) {
+    public static CategoryResponse fromChild(Category category, List<GenreResponse> genres) {
         return CategoryResponse.builder()
                 .id(category.getId())
                 .name(category.getName())
                 .writable(category.isWritable())
                 .imageUrl(category.getImageUrl())
-                .genres(category.getGenres().stream()
-                        .map(GenreResponse::from)
-                        .collect(Collectors.toList()))
+                .genres(genres)
                 .children(null)
                 .build();
     }

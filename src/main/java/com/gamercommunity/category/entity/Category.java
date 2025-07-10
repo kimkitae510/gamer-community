@@ -42,8 +42,6 @@ public class Category {
 
     private String imageUrl;
 
-    private Set<Genre> genres = new HashSet<>();
-
     //반정규화 컬럼
     private Double rating = 0.0;
     private Long reviewCount = 0L;
@@ -55,10 +53,9 @@ public class Category {
 
 
     @Builder
-    public Category(String name, boolean writable, Category parent, String imageUrl, Set<Genre> genres) {
+    public Category(String name, boolean writable, Category parent, String imageUrl) {
         this.name = name;
         this.writable = writable;
-        this.genres = genres != null ? genres : new HashSet<>();
         this.imageUrl = imageUrl;
         this.parent = parent;
         this.rating = 0.0;
@@ -77,15 +74,6 @@ public class Category {
             throw new IllegalArgumentException("카테고리 이름은 필수입니다.");
         }
         this.name = name;
-    }
-
-    // 카테고리의 장르 수정
-    public void updateGenres(Set<Genre> genres) {
-        if (genres == null) {
-            throw new IllegalArgumentException("장르 정보는 null일 수 없습니다.");
-        }
-        this.genres.clear();
-        this.genres.addAll(genres);
     }
 
 }

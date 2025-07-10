@@ -19,18 +19,18 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
     List<Category> findByParentIdOrderByCreatedAtDesc(Long parentId);
 
 
-    // 장르별 카테고리 목록 조회
+    // 장르별 카테고리 목록 조회 (CategoryGenre 조인)
     @Query("""
         SELECT DISTINCT c FROM Category c 
-        LEFT JOIN FETCH c.genres g
+        JOIN CategoryGenre cg ON cg.category = c
         WHERE c.parent.id = :parentId 
-        AND g.id = :genreId
+        AND cg.genre.id = :genreId
         ORDER BY c.createdAt DESC
     """)
     List<Category> findByParentIdAndGenreIdWithGenres(@Param("parentId") Long parentId, @Param("genreId") Long genreId);
 
 
-    // 평점 재계산 및 업데이트
+    // 평점 재계산 및 업데이트 (삭제된 리뷰 제외)
     @Modifying(clearAutomatically = true)
     @Query("""
         UPDATE Category c
@@ -38,6 +38,7 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
             SELECT COALESCE(AVG(r.rating), 0.0)
             FROM Review r
             WHERE r.game.id = :categoryId
+            AND r.status = 1
         )
         WHERE c.id = :categoryId
     """)
@@ -55,7 +56,15 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
     @Query("UPDATE Category c SET c.reviewCount = CASE WHEN c.reviewCount > 0 THEN c.reviewCount - 1 ELSE 0 END WHERE c.id = :categoryId")
     void decrementReviewCount(@Param("categoryId") Long categoryId);
 
+    // 게시글 개수 증가
+    @Modifying(clearAutomatically = true)
+    @Query("UPDATE Category c SET c.postCount = c.postCount + 1 WHERE c.id = :categoryId")
+    void incrementPostCount(@Param("categoryId") Long categoryId);
 
+    // 게시글 개수 감소
+    @Modifying(clearAutomatically = true)
+    @Query("UPDATE Category c SET c.postCount = CASE WHEN c.postCount > 0 THEN c.postCount - 1 ELSE 0 END WHERE c.id = :categoryId")
+    void decrementPostCount(@Param("categoryId") Long categoryId);
 
 }
 

@@ -5,12 +5,14 @@ import com.gamercommunity.aws.s3.service.S3Service;
 import com.gamercommunity.category.dto.CategoryRequest;
 import com.gamercommunity.category.dto.CategoryResponse;
 import com.gamercommunity.category.entity.Category;
+import com.gamercommunity.category.entity.CategoryGenre;
+import com.gamercommunity.category.repository.CategoryGenreRepository;
 import com.gamercommunity.category.repository.CategoryRepository;
-import com.gamercommunity.global.exception.custom.EntityNotFoundException;
-import com.gamercommunity.global.exception.custom.InvalidRequestException;
+import com.gamercommunity.genre.dto.GenreResponse;
 import com.gamercommunity.genre.entity.Genre;
 import com.gamercommunity.genre.repository.GenreRepository;
-import com.gamercommunity.post.repository.PostRepository;
+import com.gamercommunity.global.exception.custom.EntityNotFoundException;
+import com.gamercommunity.global.exception.custom.InvalidRequestException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,15 +21,16 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class CategoryService {
 
     private final CategoryRepository categoryRepository;
+    private final CategoryGenreRepository categoryGenreRepository;
     private final GenreRepository genreRepository;
     private final S3Service s3Service;
-    private final PostRepository postRepository;
 
     // 부모 카테고리 생성
     @Transactional
@@ -53,17 +56,26 @@ public class CategoryService {
             throw new InvalidRequestException("자식 카테고리에는 하위 카테고리를 생성할 수 없습니다.");
         }
 
-        Set<Genre> genres = validateAndGetGenres(categoryRequest.getGenreId());
-
+        // 카테고리 생성
         Category category = Category.builder()
                 .name(categoryRequest.getName())
                 .parent(parent)
-                .genres(genres)
                 .writable(categoryRequest.isWritable())
                 .build();
 
         Category saved = categoryRepository.save(category);
-        return CategoryResponse.fromChild(saved);
+
+
+        Set<Genre> genres = validateAndGetGenres(categoryRequest.getGenreId());
+        for (Genre genre : genres) {
+            CategoryGenre categoryGenre = CategoryGenre.builder()
+                    .category(saved)
+                    .genre(genre)
+                    .build();
+            categoryGenreRepository.save(categoryGenre);
+        }
+
+        return toCategoryResponse(saved);
     }
 
     // 게임기종별(ps5,닌텐도,엑스박스 등) 부모 카테고리 목록 조회
@@ -81,7 +93,7 @@ public class CategoryService {
         List<Category> categories = categoryRepository.findByParentIdOrderByCreatedAtDesc(parentId);
 
         return categories.stream()
-                .map(CategoryResponse::fromChild)
+                .map(this::toCategoryResponse)
                 .toList();
     }
 
@@ -100,7 +112,7 @@ public class CategoryService {
         List<Category> categories = categoryRepository.findByParentIdAndGenreIdWithGenres(parentId, genreId);
 
         return categories.stream()
-                .map(CategoryResponse::fromChild)
+                .map(this::toCategoryResponse)
                 .toList();
     }
 
@@ -109,10 +121,18 @@ public class CategoryService {
     public CategoryResponse updateChildCategoryGenere(Long categoryId, CategoryRequest categoryRequest) {
         Category category = findChildCategoryById(categoryId);
 
-        Set<Genre> genres = validateAndGetGenres(categoryRequest.getGenreId());
-        category.updateGenres(genres);
+        categoryGenreRepository.deleteByCategoryId(categoryId);
 
-        return CategoryResponse.fromChild(category);
+        Set<Genre> genres = validateAndGetGenres(categoryRequest.getGenreId());
+        for (Genre genre : genres) {
+            CategoryGenre categoryGenre = CategoryGenre.builder()
+                    .category(category)
+                    .genre(genre)
+                    .build();
+            categoryGenreRepository.save(categoryGenre);
+        }
+
+        return toCategoryResponse(category);
     }
 
     // 자식 카테고리 이름 수정
@@ -121,7 +141,7 @@ public class CategoryService {
         Category category = findChildCategoryById(categoryId);
         category.updateName(categoryRequest.getName());
 
-        return CategoryResponse.fromChild(category);
+        return toCategoryResponse(category);
     }
 
     // 자식 카테고리 이미지 변경
@@ -180,6 +200,16 @@ public class CategoryService {
         }
 
         return new HashSet<>(foundGenres);
+    }
+
+    // Category를 CategoryResponse로 변환 (장르 포함)
+    private CategoryResponse toCategoryResponse(Category category) {
+        List<Genre> genres = categoryGenreRepository.findGenresByCategoryId(category.getId());
+        List<GenreResponse> genreResponses = genres.stream()
+                .map(GenreResponse::from)
+                .collect(Collectors.toList());
+        
+        return CategoryResponse.fromChild(category, genreResponses);
     }
 
 }
