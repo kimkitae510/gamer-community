@@ -27,7 +27,6 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
                 .selectFrom(post)
                 .join(post.author, user).fetchJoin()
                 .join(post.category, category).fetchJoin()
-                .leftJoin(category.genres).fetchJoin()
                 .where(
                         categoryIdEq(categoryId),
                         tagEq(tag)

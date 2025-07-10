@@ -53,6 +53,9 @@ public class PostService {
 
         postRepository.save(post);
 
+        // 카테고리 게시글 수 증가
+        categoryRepository.incrementPostCount(postRequest.getCategoryId());
+
         return post.getId();
     }
 
@@ -66,9 +69,13 @@ public class PostService {
             throw new AccessDeniedException("본인 게시글만 삭제할 수 있습니다.");
         }
         
+        Long categoryId = post.getCategory().getId();
+
         // 소프트 삭제
         post.softDelete();
-        // postLikeRepository.deleteByPostId(postId); // 좋아요는 유지
+
+        // 카테고리 게시글 수 감소
+        categoryRepository.decrementPostCount(categoryId);
     }
 
     // 게시글 수정
