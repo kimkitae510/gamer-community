@@ -117,7 +117,7 @@ public class CommentService {
             }
         }
 
-        // 댓글 트리 2단계
+        // 댓글 트리
         List<CommentResponse> result = new ArrayList<>();
         for (Comment c : allComments) {
             CommentResponse dto = dtoMap.get(c.getId());
@@ -149,9 +149,13 @@ public class CommentService {
             throw new AccessDeniedException("작성자만 삭제할 수 있습니다");
         }
 
-        // 소프트 삭제 (실제로 삭제하지 않음)
+        Long postId = comment.getPost().getId();
+
+        // 소프트 삭제
         comment.softDelete();
-        // 좋아요와 카운트는 유지
+
+        // 게시글 댓글 수 감소
+        postRepository.decrementCommentCount(postId);
     }
 
     // 댓글 수정
