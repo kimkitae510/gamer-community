@@ -36,7 +36,7 @@ public class PostResponse {
                 .views(post.getViews())
                 .createdAt(post.getCreatedAt().toString())
                 .updatedAt(post.getUpdatedAt().toString())
-                .tag(post.getTag().toString())
+                .tag(post.getTag() != null ? post.getTag().toString() : "일반")
                 .build();
     }
 }

@@ -53,13 +53,12 @@ public class PostService {
 
         postRepository.save(post);
 
-        // 카테고리 게시글 수 증가
         categoryRepository.incrementPostCount(postRequest.getCategoryId());
 
         return post.getId();
     }
 
-    // 게시글 삭제 (소프트 삭제)
+    // 게시글 삭제
     @Transactional
     public void deletePost(Long postId, String loginId) {
         Post post = postRepository.findById(postId)
@@ -71,7 +70,6 @@ public class PostService {
         
         Long categoryId = post.getCategory().getId();
 
-        // 소프트 삭제
         post.softDelete();
 
         // 카테고리 게시글 수 감소
@@ -96,7 +94,7 @@ public class PostService {
     // 게시글 상세 조회
     @Transactional
     public PostResponse getPost(Long postId) {
-        Post post = postRepository.findById(postId)
+        Post post = postRepository.findByIdWithDetails(postId)
                 .orElseThrow(() -> new EntityNotFoundException("게시글을 찾을 수 없습니다. id=" + postId));
 
         postRepository.incrementViewCount(postId);
