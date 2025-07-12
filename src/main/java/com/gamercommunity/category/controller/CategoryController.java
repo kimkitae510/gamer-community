@@ -40,6 +40,13 @@ public class CategoryController {
         return ResponseEntity.ok(categoryService.findParents());
     }
 
+    // 자식 카테고리 목록 조회 (게임 목록)
+    @GetMapping("/{parentId}/children")
+    public ResponseEntity<List<CategoryResponse>> getChildCategories(@PathVariable Long parentId) {
+        return ResponseEntity.ok(categoryService.findChild(parentId));
+    }
+
+
     // 장르별 카테고리 목록 조회
     @GetMapping("/parents/{parentId}/genres/{genreId}")
     public ResponseEntity<List<CategoryResponse>> getCategoriesByGenre(
@@ -75,6 +82,12 @@ public class CategoryController {
     public ResponseEntity<String> deleteChildCategory(@PathVariable Long categoryId) {
         categoryService.deleteChildrenCategory(categoryId);
         return ResponseEntity.ok("게시글이 삭제되었습니다.");
+    }
+
+    // 단일 자식 카테고리 조회
+    @GetMapping("/children/{childId}")
+    public ResponseEntity<CategoryResponse> getChildCategory(@PathVariable Long childId) {
+        return ResponseEntity.ok(categoryService.findChildById(childId));
     }
 
 }

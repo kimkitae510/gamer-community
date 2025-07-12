@@ -171,6 +171,14 @@ public class CategoryService {
         categoryRepository.delete(category);
     }
 
+    // 단일 자식 카테고리 조회
+    @Transactional(readOnly = true)
+    public CategoryResponse findChildById(Long childId) {
+        Category category = categoryRepository.findById(childId)
+                .orElseThrow(() -> new EntityNotFoundException("카테고리를 찾을 수 없습니다."));
+
+        return toCategoryResponse(category);
+    }
 
 
 
@@ -202,7 +210,6 @@ public class CategoryService {
         return new HashSet<>(foundGenres);
     }
 
-    // Category를 CategoryResponse로 변환 (장르 포함)
     private CategoryResponse toCategoryResponse(Category category) {
         List<Genre> genres = categoryGenreRepository.findGenresByCategoryId(category.getId());
         List<GenreResponse> genreResponses = genres.stream()
