@@ -73,7 +73,7 @@ public class AuthController {
         return ResponseEntity.ok(Map.of(
                 "loginId", user.getLoginId(),
                 "username", user.getNickname(),
-                "role", user.getGrade() != null ? user.getGrade().name() : "UNKNOWN"
+                "grade", user.getGrade() != null ? user.getGrade().name() : "LEVEL1"
         ));
     }
 }
