@@ -29,7 +29,8 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
                 .join(post.category, category).fetchJoin()
                 .where(
                         categoryIdEq(categoryId),
-                        tagEq(tag)
+                        tagEq(tag),
+                        post.status.eq(com.gamercommunity.global.enums.ContentStatus.ACTIVE)
                 )
                 .orderBy(getOrderSpecifier(postSort))
                 .distinct()

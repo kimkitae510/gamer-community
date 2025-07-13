@@ -97,6 +97,11 @@ public class PostService {
         Post post = postRepository.findByIdWithDetails(postId)
                 .orElseThrow(() -> new EntityNotFoundException("게시글을 찾을 수 없습니다. id=" + postId));
 
+        // 삭제된 게시글 체크
+        if (post.getStatus().isDeleted()) {
+            throw new EntityNotFoundException("삭제된 게시글입니다. id=" + postId);
+        }
+
         postRepository.incrementViewCount(postId);
 
         return PostResponse.from(post);

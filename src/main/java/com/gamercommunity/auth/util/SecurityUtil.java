@@ -23,7 +23,7 @@ public class SecurityUtil {
         return Optional.ofNullable(loginId);
     }
 
-    // 로그인 필수인 경우 사용 (예외 던짐)
+    // 로그인 필수인 경우 사용
     public static String getRequiredLoginId() {
         return getCurrentLoginId()
                 .orElseThrow(() -> new UnauthorizedException("로그인이 필요합니다"));

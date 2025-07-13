@@ -1,6 +1,6 @@
 package com.gamercommunity.comment.entity;
 
-import com.gamercommunity.common.enums.ContentStatus;
+import com.gamercommunity.global.enums.ContentStatus;
 import com.gamercommunity.global.time.Time;
 import com.gamercommunity.post.entity.Post;
 import com.gamercommunity.user.entity.User;

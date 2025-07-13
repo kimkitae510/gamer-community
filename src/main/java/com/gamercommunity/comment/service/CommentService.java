@@ -85,11 +85,24 @@ public class CommentService {
 
         Map<Long, CommentResponse> dtoMap = new HashMap<>();
         for (Comment c : allComments) {
+            // 삭제된 댓글 처리
+            String displayContent = c.getStatus().isDeleted() 
+                ? "삭제된 댓글입니다" 
+                : c.getContent();
+            
+            String displayAuthor = c.getStatus().isDeleted() 
+                ? "알 수 없음" 
+                : c.getAuthor().getNickname();
+            
+            String displayAuthorId = c.getStatus().isDeleted() 
+                ? "" 
+                : c.getAuthor().getLoginId();
+
             CommentResponse dto = CommentResponse.of(
                     c.getId(),
-                    c.getContent(),
-                    c.getAuthor().getNickname(),
-                    c.getAuthor().getLoginId(),
+                    displayContent,
+                    displayAuthor,
+                    displayAuthorId,
                     c.getCreatedAt(),
                     c.getUpdatedAt(),
                     c.getLikeCount()
@@ -97,21 +110,22 @@ public class CommentService {
             dtoMap.put(c.getId(), dto);
         }
 
-        // 좋아요 정보 일괄 조회
+        // 좋아요 정보 일괄 조회 (삭제되지 않은 댓글만)
         if (loginId != null) {
             try {
-                List<Long> commentIds = allComments.stream()
+                List<Long> activeCommentIds = allComments.stream()
+                        .filter(c -> c.getStatus().isActive())
                         .map(Comment::getId)
                         .collect(Collectors.toList());
 
+                if (!activeCommentIds.isEmpty()) {
+                    List<Long> likedCommentIdList = commentLikeRepository.findLikedCommentIds(activeCommentIds, loginId);
+                    Set<Long> likedCommentIds = new HashSet<>(likedCommentIdList);
 
-                List<Long> likedCommentIdList = commentLikeRepository.findLikedCommentIds(commentIds, loginId);
-                Set<Long> likedCommentIds = new HashSet<>(likedCommentIdList);
-
-
-                dtoMap.values().forEach(dto ->
-                        dto.setIsLiked(likedCommentIds.contains(dto.getId()))
-                );
+                    dtoMap.values().forEach(dto ->
+                            dto.setIsLiked(likedCommentIds.contains(dto.getId()))
+                    );
+                }
             } catch (Exception e) {
                 System.err.println("좋아요 정보 조회 실패: " + e.getMessage());
             }
@@ -139,7 +153,7 @@ public class CommentService {
     }
 
 
-    // 댓글 삭제 (소프트 삭제)
+    // 댓글 삭제
     @Transactional
     public void deleteComment(Long commentId, String loginId) {
         Comment comment = commentRepository.findById(commentId)
@@ -151,10 +165,7 @@ public class CommentService {
 
         Long postId = comment.getPost().getId();
 
-        // 소프트 삭제
         comment.softDelete();
-
-        // 게시글 댓글 수 감소
         postRepository.decrementCommentCount(postId);
     }
 

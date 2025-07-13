@@ -1,7 +1,7 @@
 package com.gamercommunity.review.entity;
 
 import com.gamercommunity.category.entity.Category;
-import com.gamercommunity.common.enums.ContentStatus;
+import com.gamercommunity.global.enums.ContentStatus;
 import com.gamercommunity.global.time.Time;
 import com.gamercommunity.user.entity.User;
 import jakarta.persistence.*;

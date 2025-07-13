@@ -1,5 +1,6 @@
 package com.gamercommunity.genre.controller;
 
+import com.gamercommunity.auth.util.SecurityUtil;
 import com.gamercommunity.genre.dto.GenreRequest;
 import com.gamercommunity.genre.dto.GenreResponse;
 import com.gamercommunity.genre.service.GenreService;
@@ -21,14 +22,16 @@ public class GenreController {
     // 장르 생성
     @PostMapping
     public ResponseEntity<GenreResponse> createGenre(@RequestBody @Valid GenreRequest request) {
-        GenreResponse response = genreService.createGenre(request);
+        String loginId = SecurityUtil.getRequiredLoginId();
+        GenreResponse response = genreService.createGenre(request, loginId);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     // 장르 삭제
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteGenre(@PathVariable Long id) {
-        genreService.deleteGenre(id);
+        String loginId = SecurityUtil.getRequiredLoginId();
+        genreService.deleteGenre(id, loginId);
         return ResponseEntity.noContent().build();
     }
 
@@ -37,7 +40,8 @@ public class GenreController {
     public ResponseEntity<GenreResponse> updateGenre(
             @PathVariable Long id,
             @RequestBody @Valid GenreRequest request) {
-        GenreResponse response = genreService.updateGenre(id, request);
+        String loginId = SecurityUtil.getRequiredLoginId();
+        GenreResponse response = genreService.updateGenre(id, request, loginId);
         return ResponseEntity.ok(response);
     }
 

@@ -28,7 +28,7 @@ public class ReviewLikeController {
     }
 
     // 리뷰 목록 좋아요 상태확인
-    @GetMapping("/like-status/bulk")
+    @GetMapping("/like-status")
     public ResponseEntity<Map<Long, Boolean>> getLikeStatusBulk(@RequestParam List<Long> reviewIds) {
         String loginId = SecurityUtil.getRequiredLoginId();
         Map<Long, Boolean> likeStatus = reviewLikeService.getLikeStatus(reviewIds, loginId);
