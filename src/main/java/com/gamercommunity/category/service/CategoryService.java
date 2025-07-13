@@ -13,7 +13,10 @@ import com.gamercommunity.genre.entity.Genre;
 import com.gamercommunity.genre.repository.GenreRepository;
 import com.gamercommunity.global.exception.custom.EntityNotFoundException;
 import com.gamercommunity.global.exception.custom.InvalidRequestException;
+import com.gamercommunity.user.entity.User;
+import com.gamercommunity.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -31,10 +34,13 @@ public class CategoryService {
     private final CategoryGenreRepository categoryGenreRepository;
     private final GenreRepository genreRepository;
     private final S3Service s3Service;
+    private final UserRepository userRepository;
 
     // 부모 카테고리 생성
     @Transactional
-    public CategoryResponse createParentCategory(CategoryRequest categoryRequest) {
+    public CategoryResponse createParentCategory(CategoryRequest categoryRequest, String loginId) {
+        checkLevel3Permission(loginId);
+        
         Category category = Category.builder()
                 .name(categoryRequest.getName())
                 .parent(null)
@@ -48,7 +54,9 @@ public class CategoryService {
 
     // 자식 카테고리 생성
     @Transactional
-    public CategoryResponse createChildCategory(CategoryRequest categoryRequest) {
+    public CategoryResponse createChildCategory(CategoryRequest categoryRequest, String loginId) {
+        checkLevel3Permission(loginId);
+        
         Category parent = categoryRepository.findById(categoryRequest.getParentId())
                 .orElseThrow(() -> new EntityNotFoundException("부모 카테고리를 찾을 수 없습니다. id=" + categoryRequest.getParentId()));
 
@@ -118,7 +126,9 @@ public class CategoryService {
 
     // 자식 카테고리 장르 수정
     @Transactional
-    public CategoryResponse updateChildCategoryGenere(Long categoryId, CategoryRequest categoryRequest) {
+    public CategoryResponse updateChildCategoryGenere(Long categoryId, CategoryRequest categoryRequest, String loginId) {
+        checkLevel3Permission(loginId);
+        
         Category category = findChildCategoryById(categoryId);
 
         categoryGenreRepository.deleteByCategoryId(categoryId);
@@ -137,7 +147,9 @@ public class CategoryService {
 
     // 자식 카테고리 이름 수정
     @Transactional
-    public CategoryResponse updateChildCategoryName(Long categoryId, CategoryRequest categoryRequest) {
+    public CategoryResponse updateChildCategoryName(Long categoryId, CategoryRequest categoryRequest, String loginId) {
+        checkLevel3Permission(loginId);
+        
         Category category = findChildCategoryById(categoryId);
         category.updateName(categoryRequest.getName());
 
@@ -146,7 +158,9 @@ public class CategoryService {
 
     // 자식 카테고리 이미지 변경
     @Transactional
-    public String replaceChildCategoryImage(Long categoryId, MultipartFile newImageFile) {
+    public String replaceChildCategoryImage(Long categoryId, MultipartFile newImageFile, String loginId) {
+        checkLevel3Permission(loginId);
+        
         Category category = findChildCategoryById(categoryId);
 
         String oldImageUrl = category.getImageUrl();
@@ -165,7 +179,9 @@ public class CategoryService {
 
     // 자식 카테고리 삭제
     @Transactional
-    public void deleteChildrenCategory(Long categoryId) {
+    public void deleteChildrenCategory(Long categoryId, String loginId) {
+        checkLevel3Permission(loginId);
+        
         Category category = findChildCategoryById(categoryId);
 
         categoryRepository.delete(category);
@@ -183,6 +199,15 @@ public class CategoryService {
 
 
     // =============================== 헬퍼 메서드 ==========================================================================
+
+    private void checkLevel3Permission(String loginId) {
+        User user = userRepository.findByLoginId(loginId)
+                .orElseThrow(() -> new EntityNotFoundException("사용자를 찾을 수 없습니다: " + loginId));
+        
+        if (!user.getGrade().isLevel3OrAbove()) {
+            throw new AccessDeniedException("레벨 3 이상만 게시판을 관리할 수 있습니다.");
+        }
+    }
 
     private Category findChildCategoryById(Long categoryId) {
         Category category = categoryRepository.findById(categoryId)

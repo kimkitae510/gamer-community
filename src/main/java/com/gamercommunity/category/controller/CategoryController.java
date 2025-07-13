@@ -1,5 +1,6 @@
 package com.gamercommunity.category.controller;
 
+import com.gamercommunity.auth.util.SecurityUtil;
 import com.gamercommunity.category.dto.CategoryRequest;
 import com.gamercommunity.category.dto.CategoryResponse;
 import com.gamercommunity.category.service.CategoryService;
@@ -23,15 +24,17 @@ public class CategoryController {
     @PostMapping("/parents")
     public ResponseEntity<CategoryResponse> createParentCategory(@PathVariable Long parentId,
                                                                  @RequestBody CategoryRequest request) {
-        return ResponseEntity.ok(categoryService.createParentCategory(request));
+        String loginId = SecurityUtil.getRequiredLoginId();
+        return ResponseEntity.ok(categoryService.createParentCategory(request, loginId));
     }
 
 
     // 자식 카테고리 생성
     @PostMapping("/parents/{parentId}/children")
     public ResponseEntity<CategoryResponse> createChildCategory(@PathVariable Long parentId,  @RequestBody CategoryRequest categoryRequest) {
+        String loginId = SecurityUtil.getRequiredLoginId();
         categoryRequest.setParentId(parentId);
-        return ResponseEntity.ok(categoryService.createChildCategory(categoryRequest));
+        return ResponseEntity.ok(categoryService.createChildCategory(categoryRequest, loginId));
     }
 
     // 게임기종별(ps5,닌텐도,엑스박스 등) 부모 카테고리 목록 조회
@@ -61,26 +64,30 @@ public class CategoryController {
             @PathVariable Long childCategoryId,
             @RequestParam("image") MultipartFile imageFile) {
 
-        String newImageUrl = categoryService.replaceChildCategoryImage(childCategoryId, imageFile);
+        String loginId = SecurityUtil.getRequiredLoginId();
+        String newImageUrl = categoryService.replaceChildCategoryImage(childCategoryId, imageFile, loginId);
         return ResponseEntity.ok(newImageUrl);
     }
 
     // 자식 카테고리 장르 수정
     @PutMapping("/{categoryId}/genres/update")
     public ResponseEntity<CategoryResponse> updateChildCategoryGenere(@PathVariable Long categoryId, @RequestBody CategoryRequest categoryRequest) {
-        return ResponseEntity.ok(categoryService.updateChildCategoryGenere(categoryId, categoryRequest));
+        String loginId = SecurityUtil.getRequiredLoginId();
+        return ResponseEntity.ok(categoryService.updateChildCategoryGenere(categoryId, categoryRequest, loginId));
     }
 
     // 자식 카테고리 이름 수정
     @PutMapping("/{categoryId}/name/update")
     public ResponseEntity<CategoryResponse> updateChildCategoryName(@PathVariable Long categoryId, @RequestBody CategoryRequest categoryRequest) {
-        return ResponseEntity.ok(categoryService.updateChildCategoryName(categoryId, categoryRequest));
+        String loginId = SecurityUtil.getRequiredLoginId();
+        return ResponseEntity.ok(categoryService.updateChildCategoryName(categoryId, categoryRequest, loginId));
     }
 
     // 자식카테고리 삭제
     @DeleteMapping("/{categoryId}")
     public ResponseEntity<String> deleteChildCategory(@PathVariable Long categoryId) {
-        categoryService.deleteChildrenCategory(categoryId);
+        String loginId = SecurityUtil.getRequiredLoginId();
+        categoryService.deleteChildrenCategory(categoryId, loginId);
         return ResponseEntity.ok("게시글이 삭제되었습니다.");
     }
 
