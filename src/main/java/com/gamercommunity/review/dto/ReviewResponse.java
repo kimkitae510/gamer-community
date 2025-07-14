@@ -24,7 +24,7 @@ public class ReviewResponse {
     @Setter
     private Boolean isLiked;
     
-    private int status;
+    private String status;
 
     public static ReviewResponse of(
             Long id,
@@ -35,7 +35,7 @@ public class ReviewResponse {
             LocalDateTime createdAt,
             LocalDateTime updatedAt,
             int likeCount,
-            int status
+            String status
     ) {
         return ReviewResponse.builder()
                 .id(id)
@@ -63,7 +63,7 @@ public class ReviewResponse {
                 review.getCreatedAt(),
                 review.getUpdatedAt(),
                 review.getLikeCount(),
-                review.getStatus().getCode()
+                review.getStatus().name()
         );
     }
 }

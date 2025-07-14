@@ -45,7 +45,7 @@ public class Comment extends Time {
 
     private int likeCount;
 
-    @Enumerated(EnumType.ORDINAL)
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private ContentStatus status;
 

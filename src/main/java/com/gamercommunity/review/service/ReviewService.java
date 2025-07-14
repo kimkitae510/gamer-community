@@ -157,7 +157,7 @@ public class ReviewService {
                     r.getCreatedAt(),
                     r.getUpdatedAt(),
                     r.getLikeCount(),
-                    r.getStatus().getCode()
+                    r.getStatus().name()
             );
             dtoMap.put(r.getId(), dto);
         }

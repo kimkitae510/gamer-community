@@ -6,10 +6,9 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @RequiredArgsConstructor
 public enum ContentStatus {
-    ACTIVE(1, "활성"),
-    DELETED(0, "삭제됨");
+    ACTIVE("활성"),
+    DELETED("삭제됨");
 
-    private final int code;
     private final String description;
 
     public boolean isDeleted() {

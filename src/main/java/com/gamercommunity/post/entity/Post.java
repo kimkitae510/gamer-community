@@ -47,7 +47,7 @@ public class Post extends Time {
     @Column(nullable = false, length = 20)
     private Tag tag;
 
-    @Enumerated(EnumType.ORDINAL)
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private ContentStatus status;
 

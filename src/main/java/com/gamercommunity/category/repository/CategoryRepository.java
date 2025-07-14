@@ -38,7 +38,7 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
             SELECT COALESCE(AVG(r.rating), 0.0)
             FROM Review r
             WHERE r.game.id = :categoryId
-            AND r.status = 1
+            AND r.status = 'ACTIVE'
         )
         WHERE c.id = :categoryId
     """)
