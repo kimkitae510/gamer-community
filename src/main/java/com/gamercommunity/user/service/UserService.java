@@ -42,7 +42,7 @@ public class UserService {
         if (userRepository.existsByLoginId(joinRequest.getLoginId())) {
             throw new IllegalArgumentException("이미 사용 중인 아이디입니다.");
         }
-        if (userRepository.existsByNickname(joinRequest.getUsername())) {
+        if (userRepository.existsByNickname(joinRequest.getNickname())) {
             throw new IllegalArgumentException("이미 사용 중인 닉네임입니다.");
         }
 

@@ -35,7 +35,7 @@ public class User {
         return User.builder()
                 .loginId(request.getLoginId())
                 .password(encodedPassword)
-                .nickname(request.getUsername())
+                .nickname(request.getNickname())
                 .grade(Grade.LEVEL1)
                 .build();
     }

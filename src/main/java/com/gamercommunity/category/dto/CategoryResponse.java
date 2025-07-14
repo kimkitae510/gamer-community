@@ -25,6 +25,8 @@ public class CategoryResponse {
     private LocalDateTime createdAt;
     private List<GenreResponse> genres;
     private String imageUrl;
+    private Long postCount;
+    private Long ratingCount;
 
 
 
@@ -44,6 +46,9 @@ public class CategoryResponse {
                 .writable(category.isWritable())
                 .imageUrl(category.getImageUrl())
                 .genres(genres)
+                .rating(category.getRating())
+                .postCount(category.getPostCount())
+                .ratingCount(category.getReviewCount())
                 .children(null)
                 .build();
     }

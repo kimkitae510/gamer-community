@@ -22,6 +22,6 @@ public class JoinRequest {
     private String passwordCheck;
 
     @NotBlank(message = "닉네임이 비어있습니다.")
-    private String username;
+    private String nickname;
 
 }

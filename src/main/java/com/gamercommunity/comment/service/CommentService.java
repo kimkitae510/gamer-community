@@ -44,6 +44,10 @@ public class CommentService {
             Comment target = commentRepository.findById(commentRequest.getParentId())
                     .orElseThrow(() -> new EntityNotFoundException("부모 댓글", commentRequest.getParentId()));
 
+            // 삭제된 댓글에는 대댓글 작성 불가
+            if (target.getStatus().isDeleted()) {
+                throw new IllegalStateException("삭제된 댓글에는 답글을 작성할 수 없습니다.");
+            }
 
             if (target.getParent() == null) {
 
