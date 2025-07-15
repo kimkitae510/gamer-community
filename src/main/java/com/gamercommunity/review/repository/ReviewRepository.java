@@ -20,12 +20,12 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
     boolean existsByAuthorAndGameAndParentIsNull(@Param("author") User author, @Param("game") Category game);
 
     // 좋아요 수 증가
-    @Modifying(clearAutomatically = true)
+    @Modifying
     @Query("UPDATE Review r SET r.likeCount = r.likeCount + 1 WHERE r.id = :reviewId")
     void incrementLikeCount(@Param("reviewId") Long reviewId);
 
     //좋아요 수 감소
-    @Modifying(clearAutomatically = true)
+    @Modifying
     @Query("UPDATE Review r SET r.likeCount = CASE WHEN r.likeCount > 0 THEN r.likeCount - 1 ELSE 0 END WHERE r.id = :reviewId")
     void decrementLikeCount(@Param("reviewId") Long reviewId);
 

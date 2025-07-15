@@ -91,7 +91,7 @@ public class Post extends Time {
         }
     }
 
-    // 소프트 삭제 (원본 데이터 유지, status만 변경)
+    // 게시글 소프트 삭제
     public void softDelete() {
         this.status = ContentStatus.DELETED;
     }

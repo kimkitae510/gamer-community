@@ -9,7 +9,6 @@ import com.gamercommunity.post.entity.Post;
 import com.gamercommunity.post.entity.PostSort;
 import com.gamercommunity.post.entity.Tag;
 import com.gamercommunity.post.repository.PostRepository;
-import com.gamercommunity.postLike.repository.PostLikeRepository;
 import com.gamercommunity.user.entity.User;
 import com.gamercommunity.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -28,7 +27,7 @@ public class PostService {
     private  final UserRepository userRepository;
     private  final PostRepository postRepository;
     private  final CategoryRepository categoryRepository;
-    private  final PostLikeRepository postLikeRepository;
+
 
 
     // 게시글 작성
@@ -72,7 +71,6 @@ public class PostService {
 
         post.softDelete();
 
-        // 카테고리 게시글 수 감소
         categoryRepository.decrementPostCount(categoryId);
     }
 
@@ -94,15 +92,15 @@ public class PostService {
     // 게시글 상세 조회
     @Transactional
     public PostResponse getPost(Long postId) {
+
+        postRepository.incrementViewCount(postId);
+        
         Post post = postRepository.findByIdWithDetails(postId)
                 .orElseThrow(() -> new EntityNotFoundException("게시글을 찾을 수 없습니다. id=" + postId));
 
-        // 삭제된 게시글 체크
         if (post.getStatus().isDeleted()) {
             throw new EntityNotFoundException("삭제된 게시글입니다. id=" + postId);
         }
-
-        postRepository.incrementViewCount(postId);
 
         return PostResponse.from(post);
     }

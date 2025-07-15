@@ -11,12 +11,12 @@ import java.util.List;
 public interface CommentRepository extends JpaRepository<Comment,Long> {
 
     // 좋아요 수 증가
-    @Modifying(clearAutomatically = true)
+    @Modifying
     @Query("UPDATE Comment c SET c.likeCount = c.likeCount + 1 WHERE c.id = :commentId")
     void incrementLikeCount(@Param("commentId") Long commentId);
 
     // 좋아요 수 감소
-    @Modifying(clearAutomatically = true)
+    @Modifying
     @Query("UPDATE Comment c SET c.likeCount = CASE WHEN c.likeCount > 0 THEN c.likeCount - 1 ELSE 0 END WHERE c.id = :commentId")
     void decrementLikeCount(@Param("commentId") Long commentId);
 
@@ -27,4 +27,3 @@ public interface CommentRepository extends JpaRepository<Comment,Long> {
     @Query("SELECT c FROM Comment c JOIN FETCH c.author WHERE c.post.id = :postId")
     List<Comment> findByPostIdWithAuthor(@Param("postId") Long postId);
 }
-

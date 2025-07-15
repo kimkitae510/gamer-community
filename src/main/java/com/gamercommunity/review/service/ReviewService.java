@@ -46,7 +46,6 @@ public class ReviewService {
             Review target = reviewRepository.findById(request.getParentId())
                     .orElseThrow(() -> new EntityNotFoundException("부모 리뷰", request.getParentId()));
 
-
             if (target.getParent() == null) {
                 parent = target;
             } else {
@@ -57,7 +56,6 @@ public class ReviewService {
             content = "@" + target.getAuthor().getNickname() + " " + content;
             rating = null;  // 대댓글은 평점 없음
         } else {
-
             boolean exists = reviewRepository.existsByAuthorAndGameAndParentIsNull(author, game);
             if (exists) {
                 throw new DuplicateEntityException("이미 작성한 리뷰가 있습니다.");
@@ -82,7 +80,6 @@ public class ReviewService {
 
         reviewRepository.save(review);
 
-        // 원본 리뷰만 카운트/평점 업데이트
         if (parent == null) {
             categoryRepository.incrementReviewCount(request.getGameId());
             categoryRepository.recalculateRating(request.getGameId());
@@ -103,9 +100,10 @@ public class ReviewService {
         
         Long gameId = review.getGame().getId();
 
-        review.softDelete();
 
-        // 원본 리뷰만 카운트 감소 및 평점 재계산
+        review.softDelete();
+        
+
         if (review.getParent() == null) {
             categoryRepository.decrementReviewCount(gameId);
             categoryRepository.recalculateRating(gameId);

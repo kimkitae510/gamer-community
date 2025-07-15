@@ -25,12 +25,12 @@ public interface PostRepository extends JpaRepository<Post,Long>, PostRepository
     void incrementViewCount(@Param("postId") Long postId);
 
     // 좋아요 수 증가
-    @Modifying(clearAutomatically = true)
+    @Modifying
     @Query("UPDATE Post p SET p.likeCount = p.likeCount + 1 WHERE p.id = :postId")
     void incrementLikeCount(@Param("postId") Long postId);
 
     // 좋아요 수 감소
-    @Modifying(clearAutomatically = true)
+    @Modifying
     @Query("UPDATE Post p SET p.likeCount = CASE WHEN p.likeCount > 0 THEN p.likeCount - 1 ELSE 0 END WHERE p.id = :postId")
     void decrementLikeCount(@Param("postId") Long postId);
 
@@ -42,7 +42,6 @@ public interface PostRepository extends JpaRepository<Post,Long>, PostRepository
     @Modifying
     @Query("UPDATE Post p SET p.commentCount = p.commentCount + 1 WHERE p.id = :postId")
     void incrementCommentCount(@Param("postId") Long postId);
-
 
     // 댓글 수 감소
     @Modifying

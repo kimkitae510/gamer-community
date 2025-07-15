@@ -31,7 +31,7 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
 
 
     // 평점 재계산 및 업데이트 (삭제된 리뷰 제외)
-    @Modifying(clearAutomatically = true)
+    @Modifying
     @Query("""
         UPDATE Category c
         SET c.rating = (
@@ -47,22 +47,22 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
 
 
     // 리뷰 개수 증가
-    @Modifying(clearAutomatically = true)
+    @Modifying
     @Query("UPDATE Category c SET c.reviewCount = c.reviewCount + 1 WHERE c.id = :categoryId")
     void incrementReviewCount(@Param("categoryId") Long categoryId);
 
     // 리뷰 개수 감소
-    @Modifying(clearAutomatically = true)
+    @Modifying
     @Query("UPDATE Category c SET c.reviewCount = CASE WHEN c.reviewCount > 0 THEN c.reviewCount - 1 ELSE 0 END WHERE c.id = :categoryId")
     void decrementReviewCount(@Param("categoryId") Long categoryId);
 
     // 게시글 개수 증가
-    @Modifying(clearAutomatically = true)
+    @Modifying
     @Query("UPDATE Category c SET c.postCount = c.postCount + 1 WHERE c.id = :categoryId")
     void incrementPostCount(@Param("categoryId") Long categoryId);
 
     // 게시글 개수 감소
-    @Modifying(clearAutomatically = true)
+    @Modifying
     @Query("UPDATE Category c SET c.postCount = CASE WHEN c.postCount > 0 THEN c.postCount - 1 ELSE 0 END WHERE c.id = :categoryId")
     void decrementPostCount(@Param("categoryId") Long categoryId);
 

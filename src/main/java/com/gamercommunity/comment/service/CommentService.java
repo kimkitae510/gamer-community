@@ -50,10 +50,8 @@ public class CommentService {
             }
 
             if (target.getParent() == null) {
-
                 parent = target;
             } else {
-
                 parent = target.getParent();
             }
 
@@ -73,6 +71,7 @@ public class CommentService {
         }
 
         commentRepository.save(comment);
+
         postRepository.incrementCommentCount(post.getId());
 
         return comment.getId();
@@ -89,7 +88,6 @@ public class CommentService {
 
         Map<Long, CommentResponse> dtoMap = new HashMap<>();
         for (Comment c : allComments) {
-            // 삭제된 댓글 처리
             String displayContent = c.getStatus().isDeleted() 
                 ? "삭제된 댓글입니다" 
                 : c.getContent();
@@ -170,6 +168,7 @@ public class CommentService {
         Long postId = comment.getPost().getId();
 
         comment.softDelete();
+
         postRepository.decrementCommentCount(postId);
     }
 
