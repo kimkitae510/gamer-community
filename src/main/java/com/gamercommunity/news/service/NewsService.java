@@ -51,4 +51,14 @@ public class NewsService {
                 .collect(Collectors.toList());
     }
 
+
+    // 전체 뉴스 조회
+    @Transactional(readOnly = true)
+    public List<NewsResponse> getAllNews() {
+        return newsRepository.findAllByOrderByPublishedAtDesc()
+                .stream()
+                .map(NewsResponse::from)
+                .collect(Collectors.toList());
+    }
+
 }

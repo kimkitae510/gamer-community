@@ -17,4 +17,9 @@ public interface NewsRepository extends JpaRepository<News, Long> {
     // 플랫폼별 뉴스 조회
     List<News> findByPlatformOrderByPublishedAtDesc(@Param("platform") Platform platform);
 
+    // 전체 뉴스 조회
+    List<News> findAllByOrderByPublishedAtDesc();
+
+
+
 }

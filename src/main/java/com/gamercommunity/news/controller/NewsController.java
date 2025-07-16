@@ -25,4 +25,10 @@ public class NewsController {
             @PathVariable Platform platform) {
         return ResponseEntity.ok(newsService.getNewsByPlatform(platform));
     }
+
+    // 전체 뉴스 조회
+    @GetMapping
+    public ResponseEntity<List<NewsResponse>> getAllNews() {
+        return ResponseEntity.ok(newsService.getAllNews());
+    }
 }
