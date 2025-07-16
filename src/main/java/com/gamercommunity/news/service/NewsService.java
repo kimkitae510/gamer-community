@@ -1,11 +1,16 @@
 package com.gamercommunity.news.service;
 
+import com.gamercommunity.global.enums.Platform;
+import com.gamercommunity.news.dto.NewsResponse;
 import com.gamercommunity.news.entity.News;
 import com.gamercommunity.news.repository.NewsRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -32,4 +37,18 @@ public class NewsService {
             log.debug("중복 뉴스 스킵: {}", news.getTitle());
         }
     }
+
+    // 플랫폼별 뉴스 조회
+    @Transactional(readOnly = true)
+    public List<NewsResponse> getNewsByPlatform(Platform platform) {
+        if (platform == null) {
+            throw new IllegalArgumentException("플랫폼을 지정해주세요.");
+        }
+
+        return newsRepository.findByPlatformOrderByPublishedAtDesc(platform)
+                .stream()
+                .map(NewsResponse::from)
+                .collect(Collectors.toList());
+    }
+
 }
