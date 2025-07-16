@@ -35,10 +35,8 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        
-        // 허용할 Origin (React 개발 서버)
-        configuration.setAllowedOriginPatterns(List.of("*"));  // 또는 구체적으로
-        // configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000", "http://localhost:5173"));
+
+        configuration.setAllowedOriginPatterns(List.of("*"));
         
         // 허용할 HTTP 메서드
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
@@ -93,6 +91,9 @@ public class SecurityConfig {
                         // 장르 (전체 공개)
                         .requestMatchers("/api/genres/**").permitAll()
 
+                        // 뉴스 (전체 공개)
+                        .requestMatchers("/api/news/**").permitAll()
+
                         // 게시글 조회 (GET만 허용)
                         .requestMatchers(HttpMethod.GET, "/api/posts/category/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/posts/{id}").permitAll()
@@ -103,7 +104,7 @@ public class SecurityConfig {
                         // 리뷰 조회 (GET만 허용)
                         .requestMatchers(HttpMethod.GET, "/api/reviews/game/**").permitAll()
 
-                        // ========== 인증 필요 (Authenticated) ==========
+                        // ========== 인증 필요 ==========
                         // 게시글 작성/수정/삭제
                         .requestMatchers("/api/posts/**").authenticated()
 

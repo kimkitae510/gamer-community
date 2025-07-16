@@ -2,22 +2,21 @@ package com.gamercommunity.news.controller;
 
 import com.gamercommunity.global.enums.Platform;
 import com.gamercommunity.news.dto.NewsResponse;
+import com.gamercommunity.news.service.NewsFetchService;
 import com.gamercommunity.news.service.NewsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/news")
+@RequestMapping("/api/news")
 @RequiredArgsConstructor
 public class NewsController {
 
     private final NewsService newsService;
+    private final NewsFetchService newsFetchService;
 
     // 플랫폼별 뉴스 조회
     @GetMapping("/platform/{platform}")
@@ -30,5 +29,12 @@ public class NewsController {
     @GetMapping
     public ResponseEntity<List<NewsResponse>> getAllNews() {
         return ResponseEntity.ok(newsService.getAllNews());
+    }
+
+    // 수동 뉴스 수집
+    @PostMapping("/fetch")
+    public ResponseEntity<String> fetchNews() {
+        newsFetchService.fetchAllNews();
+        return ResponseEntity.ok("뉴스 수집 완료");
     }
 }
