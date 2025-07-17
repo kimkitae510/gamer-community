@@ -1,6 +1,6 @@
 package com.gamercommunity.news.controller;
 
-import com.gamercommunity.global.enums.Platform;
+import com.gamercommunity.news.entity.Platform;
 import com.gamercommunity.news.dto.NewsResponse;
 import com.gamercommunity.news.service.NewsFetchService;
 import com.gamercommunity.news.service.NewsService;

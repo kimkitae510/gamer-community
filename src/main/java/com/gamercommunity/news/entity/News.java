@@ -1,6 +1,5 @@
 package com.gamercommunity.news.entity;
 
-import com.gamercommunity.global.enums.Platform;
 import com.gamercommunity.global.time.Time;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -35,16 +34,16 @@ public class News extends Time {
     private Platform platform;
 
     @Column(length = 100)
-    private String source; // 뉴스 출처
+    private String source;
 
     @Column(nullable = false)
-    private LocalDateTime publishedAt; // 원본 게시 날짜
+    private LocalDateTime publishedAt;
 
     @Column(unique = true, length = 1000)
-    private String originalUrl; // 중복 방지용 원본 URL
+    private String originalUrl;
 
     @Builder
-    public News(String title, String content, String imageUrl, Platform platform, 
+    public News(String title, String content, String imageUrl, Platform platform,
                 String source, LocalDateTime publishedAt, String originalUrl) {
         this.title = title;
         this.content = content;

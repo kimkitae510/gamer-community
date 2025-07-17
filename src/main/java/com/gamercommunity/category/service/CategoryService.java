@@ -235,6 +235,7 @@ public class CategoryService {
         return new HashSet<>(foundGenres);
     }
 
+
     private CategoryResponse toCategoryResponse(Category category) {
         List<Genre> genres = categoryGenreRepository.findGenresByCategoryId(category.getId());
         List<GenreResponse> genreResponses = genres.stream()

@@ -1,6 +1,6 @@
 package com.gamercommunity.news.dto;
 
-import com.gamercommunity.global.enums.Platform;
+import com.gamercommunity.news.entity.Platform;
 import com.gamercommunity.news.entity.News;
 import lombok.Builder;
 import lombok.Getter;

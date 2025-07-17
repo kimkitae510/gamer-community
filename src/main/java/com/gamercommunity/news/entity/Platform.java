@@ -1,4 +1,4 @@
-package com.gamercommunity.global.enums;
+package com.gamercommunity.news.entity;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -7,10 +7,10 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public enum Platform {
     PLAYSTATION("플레이스테이션"),
-    XBOX("엑스박스"),
     NINTENDO("닌텐도"),
-    STEAM("스팀"),
-    PC("PC");
+    XBOX("엑스박스"),
+    PC("PC"),
+    MOBILE("모바일");
 
-    private final String description;
+    private final String displayName;
 }
