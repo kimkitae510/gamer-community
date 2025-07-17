@@ -51,6 +51,9 @@ dependencies {
 	// RSS 파싱
 	implementation 'com.rometools:rome:1.19.0'
 
+	// HTML 크롤링
+	implementation 'org.jsoup:jsoup:1.17.2'
+
 	// 테스트
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
