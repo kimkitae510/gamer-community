@@ -45,6 +45,7 @@ public class CategoryResponse {
                 .name(category.getName())
                 .writable(category.isWritable())
                 .imageUrl(category.getImageUrl())
+                .createdAt(category.getCreatedAt())
                 .genres(genres)
                 .rating(category.getRating())
                 .postCount(category.getPostCount())

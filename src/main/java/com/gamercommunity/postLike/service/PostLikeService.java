@@ -1,6 +1,7 @@
 package com.gamercommunity.postLike.service;
 
 import com.gamercommunity.global.exception.custom.EntityNotFoundException;
+import com.gamercommunity.popular.service.PopularScoreService;
 import com.gamercommunity.post.entity.Post;
 import com.gamercommunity.post.repository.PostRepository;
 import com.gamercommunity.postLike.dto.PostLikeResponse;
@@ -22,6 +23,7 @@ public class PostLikeService {
     private final PostRepository postRepository;
     private final PostLikeRepository postLikeRepository;
     private final UserRepository userRepository;
+    private final PopularScoreService popularScoreService;
 
 
     //게시글 좋아요 토글(추가/취소)
@@ -40,6 +42,10 @@ public class PostLikeService {
             // 좋아요 취소
             postRepository.decrementLikeCount(postId);
             postLikeRepository.delete(existingLike.get());
+            
+            // 인기점수 감소 (-5점)
+            popularScoreService.onLikeCancelled(postId);
+            
             liked = false;
         } else {
             // 좋아요 추가
@@ -49,6 +55,10 @@ public class PostLikeService {
                         .user(user)
                         .build());
                 postRepository.incrementLikeCount(postId);
+                
+                // 인기점수 증가 (+5점)
+                popularScoreService.onLikeCreated(postId);
+                
                 liked = true;
             } catch (DataIntegrityViolationException e) {
                 // 유니크 제약조건 위반 (동시성 이슈 대응)

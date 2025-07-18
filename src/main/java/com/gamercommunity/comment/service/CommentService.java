@@ -6,6 +6,7 @@ import com.gamercommunity.comment.entity.Comment;
 import com.gamercommunity.comment.repository.CommentRepository;
 import com.gamercommunity.commentLike.repository.CommentLikeRepository;
 import com.gamercommunity.global.exception.custom.EntityNotFoundException;
+import com.gamercommunity.popular.service.PopularScoreService;
 import com.gamercommunity.post.entity.Post;
 import com.gamercommunity.post.repository.PostRepository;
 import com.gamercommunity.user.entity.User;
@@ -26,6 +27,7 @@ public class CommentService {
     private final PostRepository postRepository;
     private final UserRepository userRepository;
     private final CommentLikeRepository commentLikeRepository;
+    private final PopularScoreService popularScoreService;
 
     // 댓글 작성
     @Transactional
@@ -73,6 +75,9 @@ public class CommentService {
         commentRepository.save(comment);
 
         postRepository.incrementCommentCount(post.getId());
+
+        // 인기점수 증가 (+3점)
+        popularScoreService.onCommentCreated(post.getId());
 
         return comment.getId();
     }
@@ -170,6 +175,9 @@ public class CommentService {
         comment.softDelete();
 
         postRepository.decrementCommentCount(postId);
+
+        // 인기점수 감소 (-3점)
+        popularScoreService.onCommentDeleted(postId);
     }
 
     // 댓글 수정
