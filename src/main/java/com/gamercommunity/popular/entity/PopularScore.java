@@ -19,7 +19,6 @@ public class PopularScore extends Time {
     private Long id;
 
     @OneToOne(fetch = FetchType.LAZY)
-
     @JoinColumn(name = "post_id", nullable = false, unique = true)
     private Post post;
 

@@ -3,6 +3,8 @@ package com.gamercommunity.post.service;
 import com.gamercommunity.category.entity.Category;
 import com.gamercommunity.category.repository.CategoryRepository;
 import com.gamercommunity.global.exception.custom.EntityNotFoundException;
+import com.gamercommunity.popular.entity.PopularScore;
+import com.gamercommunity.popular.repository.PopularScoreRepository;
 import com.gamercommunity.post.dto.PostRequest;
 import com.gamercommunity.post.dto.PostResponse;
 import com.gamercommunity.post.entity.Post;
@@ -27,6 +29,7 @@ public class PostService {
     private  final UserRepository userRepository;
     private  final PostRepository postRepository;
     private  final CategoryRepository categoryRepository;
+    private  final PopularScoreRepository popularScoreRepository;
 
 
 
@@ -51,6 +54,14 @@ public class PostService {
                 .build();
 
         postRepository.save(post);
+
+        // 게시글 생성 시 인기점수 0으로 초기화
+        popularScoreRepository.save(PopularScore.builder()
+                .post(post)
+                .score(0)
+                .commentScore(0)
+                .likeScore(0)
+                .build());
 
         categoryRepository.incrementPostCount(postRequest.getCategoryId());
 
