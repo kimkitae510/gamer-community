@@ -99,7 +99,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/api/posts/{id}").permitAll()
 
                         // 댓글 조회 (GET만 허용)
-                        .requestMatchers(HttpMethod.GET, "/api/comments/post/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/comments/**").permitAll()
 
                         // 리뷰 조회 (GET만 허용)
                         .requestMatchers(HttpMethod.GET, "/api/reviews/game/**").permitAll()
