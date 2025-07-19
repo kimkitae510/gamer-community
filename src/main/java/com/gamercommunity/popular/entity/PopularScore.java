@@ -19,7 +19,7 @@ public class PopularScore extends Time {
     private Long id;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "post_id", nullable = false, unique = true)
+    @JoinColumn(name = "post_id", nullable = false, unique = true, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
     private Post post;
 
     @Column(nullable = false)
@@ -31,11 +31,20 @@ public class PopularScore extends Time {
     @Column(nullable = false)
     private Integer likeScore; // 추천으로 얻은 점수
 
+    @Column(nullable = false)
+    private Integer viewScore; // 조회수로 얻은 점수
+
+    @Column(nullable = false)
+    private Integer lastViewScoreCheckpoint; // 마지막으로 점수에 반영된 조회수 구간 (100 단위)
+
     @Builder
-    public PopularScore(Post post, Integer score, Integer commentScore, Integer likeScore) {
+    public PopularScore(Post post, Integer score, Integer commentScore, Integer likeScore,
+                        Integer viewScore, Integer lastViewScoreCheckpoint) {
         this.post = post;
         this.score = score != null ? score : 0;
         this.commentScore = commentScore != null ? commentScore : 0;
         this.likeScore = likeScore != null ? likeScore : 0;
+        this.viewScore = viewScore != null ? viewScore : 0;
+        this.lastViewScoreCheckpoint = lastViewScoreCheckpoint != null ? lastViewScoreCheckpoint : 0;
     }
 }

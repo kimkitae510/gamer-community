@@ -36,4 +36,19 @@ public interface PopularScoreRepository extends JpaRepository<PopularScore, Long
     @Modifying
     @Query("UPDATE PopularScore ps SET ps.score = ps.score - 5, ps.likeScore = ps.likeScore - 5 WHERE ps.post.id = :postId")
     int decrementLikeScoreAtomic(@Param("postId") Long postId);
+
+    // 조회수 체크포인트 기반 점수 업데이트
+    // 조회수가 100 단위 구간을 넘을 때만 점수 갱신, 중복 계산 방지
+    @Modifying
+    @Query(value =
+            "UPDATE popular_score ps " +
+            "JOIN post p ON ps.post_id = p.id " +
+            "SET " +
+            "    ps.score = ps.score + (p.views DIV 100 - ps.last_view_score_checkpoint), " +
+            "    ps.view_score = ps.view_score + (p.views DIV 100 - ps.last_view_score_checkpoint), " +
+            "    ps.last_view_score_checkpoint = p.views DIV 100 " +
+            "WHERE ps.post_id = :postId " +
+            "  AND p.views DIV 100 > ps.last_view_score_checkpoint",
+            nativeQuery = true)
+    int updateViewScoreAtCheckpoint(@Param("postId") Long postId);
 }

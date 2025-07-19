@@ -45,6 +45,12 @@ public class PopularScoreService {
         log.info("추천 취소: postId={}, -5점", postId);
     }
 
+    // 게시글 조회 시 호출 - 조회수 100 단위 구간을 넘을 때마다 +1점
+    @Transactional
+    public void onPostViewed(Long postId) {
+        popularScoreRepository.updateViewScoreAtCheckpoint(postId);
+    }
+
     //특정 게시글의 인기점수 조회
     @Transactional(readOnly = true)
     public Integer getScore(Long postId) {

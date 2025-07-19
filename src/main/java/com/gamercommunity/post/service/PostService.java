@@ -5,6 +5,7 @@ import com.gamercommunity.category.repository.CategoryRepository;
 import com.gamercommunity.global.exception.custom.EntityNotFoundException;
 import com.gamercommunity.popular.entity.PopularScore;
 import com.gamercommunity.popular.repository.PopularScoreRepository;
+import com.gamercommunity.popular.service.PopularScoreService;
 import com.gamercommunity.post.dto.PostRequest;
 import com.gamercommunity.post.dto.PostResponse;
 import com.gamercommunity.post.entity.Post;
@@ -30,6 +31,7 @@ public class PostService {
     private  final PostRepository postRepository;
     private  final CategoryRepository categoryRepository;
     private  final PopularScoreRepository popularScoreRepository;
+    private  final PopularScoreService popularScoreService;
 
 
 
@@ -105,6 +107,9 @@ public class PostService {
     public PostResponse getPost(Long postId) {
 
         postRepository.incrementViewCount(postId);
+
+        // 조회수 체크포인트 기반 인기점수 갱신
+        popularScoreService.onPostViewed(postId);
         
         Post post = postRepository.findByIdWithDetails(postId)
                 .orElseThrow(() -> new EntityNotFoundException("게시글을 찾을 수 없습니다. id=" + postId));
