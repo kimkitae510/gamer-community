@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -52,4 +53,26 @@ public interface PopularScoreRepository extends JpaRepository<PopularScore, Long
             "  AND p.views DIV 100 > ps.last_view_score_checkpoint",
             nativeQuery = true)
     int updateViewScoreAtCheckpoint(@Param("postId") Long postId);
+
+    // 실시간 인기글 플래그 일괄 업데이트 (24시간 이내 & 100점 이상 = true)
+    @Modifying
+    @Query(value =
+            "UPDATE popular_score ps " +
+            "JOIN post p ON ps.post_id = p.id " +
+            "SET ps.is_trending = true, ps.updated_at = NOW() " +
+            "WHERE p.created_at >= DATE_SUB(NOW(), INTERVAL 24 HOUR) " +
+            "  AND ps.score >= 100 " +
+            "  AND ps.is_trending = false",
+            nativeQuery = true)
+    int updateTrendingToTrue();
+
+    // 실시간 인기글 조회 (isTrending = true, 최신글 먼저)
+    @Query("SELECT ps FROM PopularScore ps " +
+           "JOIN FETCH ps.post p " +
+           "JOIN FETCH p.author " +
+           "JOIN FETCH p.category " +
+           "WHERE ps.isTrending = true " +
+           "AND p.status = com.gamercommunity.global.enums.ContentStatus.ACTIVE " +
+           "ORDER BY p.createdAt DESC")
+    List<PopularScore> findTrendingPosts();
 }

@@ -37,14 +37,18 @@ public class PopularScore extends Time {
     @Column(nullable = false)
     private Integer lastViewScoreCheckpoint; // 마지막으로 점수에 반영된 조회수 구간 (100 단위)
 
+    @Column(nullable = false)
+    private Boolean isTrending; // 실시간 인기글 여부 (24시간 이내 생성 & 100점 이상)
+
     @Builder
     public PopularScore(Post post, Integer score, Integer commentScore, Integer likeScore,
-                        Integer viewScore, Integer lastViewScoreCheckpoint) {
+                        Integer viewScore, Integer lastViewScoreCheckpoint, Boolean isTrending) {
         this.post = post;
         this.score = score != null ? score : 0;
         this.commentScore = commentScore != null ? commentScore : 0;
         this.likeScore = likeScore != null ? likeScore : 0;
         this.viewScore = viewScore != null ? viewScore : 0;
         this.lastViewScoreCheckpoint = lastViewScoreCheckpoint != null ? lastViewScoreCheckpoint : 0;
+        this.isTrending = isTrending != null ? isTrending : false;
     }
 }

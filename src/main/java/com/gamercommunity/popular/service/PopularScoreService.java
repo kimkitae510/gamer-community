@@ -1,11 +1,15 @@
 package com.gamercommunity.popular.service;
 
+import com.gamercommunity.popular.dto.TrendingPostResponse;
 import com.gamercommunity.popular.entity.PopularScore;
 import com.gamercommunity.popular.repository.PopularScoreRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -57,5 +61,15 @@ public class PopularScoreService {
         return popularScoreRepository.findByPostId(postId)
                 .map(PopularScore::getScore)
                 .orElse(0);
+    }
+
+    // 실시간 인기글 목록 조회 (24시간 이내 & 100점 이상)
+    @Transactional(readOnly = true)
+    public List<TrendingPostResponse> getTrendingPosts() {
+        List<PopularScore> trendingPosts = popularScoreRepository.findTrendingPosts();
+        
+        return trendingPosts.stream()
+                .map(TrendingPostResponse::from)
+                .collect(Collectors.toList());
     }
 }

@@ -63,6 +63,9 @@ public class PostService {
                 .score(0)
                 .commentScore(0)
                 .likeScore(0)
+                .viewScore(0)
+                .lastViewScoreCheckpoint(0)
+                .isTrending(false)
                 .build());
 
         categoryRepository.incrementPostCount(postRequest.getCategoryId());
