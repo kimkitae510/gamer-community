@@ -72,4 +72,16 @@ public class PopularScoreService {
                 .map(TrendingPostResponse::from)
                 .collect(Collectors.toList());
     }
+
+    // 실시간 인기글 상위 10개 조회
+    @Transactional(readOnly = true)
+    public List<TrendingPostResponse> getTop10TrendingPosts() {
+        List<PopularScore> trendingPosts = popularScoreRepository.findTopNTrendingPosts(
+                org.springframework.data.domain.PageRequest.of(0, 10)
+        );
+        
+        return trendingPosts.stream()
+                .map(TrendingPostResponse::from)
+                .collect(Collectors.toList());
+    }
 }

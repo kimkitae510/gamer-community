@@ -66,7 +66,7 @@ public interface PopularScoreRepository extends JpaRepository<PopularScore, Long
             nativeQuery = true)
     int updateTrendingToTrue();
 
-    // 실시간 인기글 조회 (isTrending = true, 최신글 먼저)
+    // 실시간 인기글 조회 - 최신순
     @Query("SELECT ps FROM PopularScore ps " +
            "JOIN FETCH ps.post p " +
            "JOIN FETCH p.author " +
@@ -75,4 +75,14 @@ public interface PopularScoreRepository extends JpaRepository<PopularScore, Long
            "AND p.status = com.gamercommunity.global.enums.ContentStatus.ACTIVE " +
            "ORDER BY p.createdAt DESC")
     List<PopularScore> findTrendingPosts();
+
+    // 실시간 인기글 상위 N개 조회 - 최신순
+    @Query("SELECT ps FROM PopularScore ps " +
+           "JOIN FETCH ps.post p " +
+           "JOIN FETCH p.author " +
+           "JOIN FETCH p.category " +
+           "WHERE ps.isTrending = true " +
+           "AND p.status = com.gamercommunity.global.enums.ContentStatus.ACTIVE " +
+           "ORDER BY p.createdAt DESC")
+    List<PopularScore> findTopNTrendingPosts(org.springframework.data.domain.Pageable pageable);
 }

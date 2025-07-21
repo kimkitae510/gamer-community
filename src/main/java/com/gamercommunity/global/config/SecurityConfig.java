@@ -94,6 +94,9 @@ public class SecurityConfig {
                         // 뉴스 (전체 공개)
                         .requestMatchers("/api/news/**").permitAll()
 
+                        // 인기글 (전체 공개)
+                        .requestMatchers("/api/popular/**").permitAll()
+
                         // 게시글 조회 (GET만 허용)
                         .requestMatchers(HttpMethod.GET, "/api/posts/category/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/posts/{id}").permitAll()

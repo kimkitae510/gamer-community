@@ -24,4 +24,11 @@ public class PopularController {
         List<TrendingPostResponse> trendingPosts = popularScoreService.getTrendingPosts();
         return ResponseEntity.ok(trendingPosts);
     }
+
+    //실시간 인기글 상위 10개 조회
+    @GetMapping("/trending/top10")
+    public ResponseEntity<List<TrendingPostResponse>> getTop10TrendingPosts() {
+        List<TrendingPostResponse> trendingPosts = popularScoreService.getTop10TrendingPosts();
+        return ResponseEntity.ok(trendingPosts);
+    }
 }
