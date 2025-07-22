@@ -12,6 +12,7 @@ import com.gamercommunity.post.entity.Post;
 import com.gamercommunity.post.entity.PostSort;
 import com.gamercommunity.post.entity.Tag;
 import com.gamercommunity.post.repository.PostRepository;
+import com.gamercommunity.stats.service.CategoryStatsService;
 import com.gamercommunity.user.entity.User;
 import com.gamercommunity.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -32,6 +33,7 @@ public class PostService {
     private  final CategoryRepository categoryRepository;
     private  final PopularScoreRepository popularScoreRepository;
     private  final PopularScoreService popularScoreService;
+    private  final CategoryStatsService categoryStatsService;
 
 
 
@@ -69,6 +71,9 @@ public class PostService {
                 .build());
 
         categoryRepository.incrementPostCount(postRequest.getCategoryId());
+
+        // 일간/주간/월간 통계 업데이트
+        categoryStatsService.onPostCreated(category);
 
         return post.getId();
     }

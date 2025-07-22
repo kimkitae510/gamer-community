@@ -14,8 +14,8 @@ public class PopularScoreScheduler {
 
     private final PopularScoreRepository popularScoreRepository;
 
-    //5분마다 실시간 인기글 플래그 업데이트
-    @Scheduled(cron = "0 */5 * * * *") // 매 5분마다 실행
+    //5분간격 실시간 인기글 플래그 업데이트
+    @Scheduled(cron = "0 */5 * * * *")
     @Transactional
     public void updateTrendingFlags() {
         log.info("실시간 인기글 플래그 업데이트 시작");
