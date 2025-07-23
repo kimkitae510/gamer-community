@@ -11,7 +11,7 @@ import java.util.List;
 public interface CategoryWeeklyStatsRepository extends JpaRepository<CategoryWeeklyStats, Long> {
 
 
-    // UPSERT: 있으면 +1, 없으면 INSERT
+    // 게시판에 이번주 게시글 카운트 점수 있으면 +1, 없으면 INSERT
     @Modifying
     @Query(value = """
         INSERT INTO category_weekly_stats (category_id, year, week, post_count, is_top)

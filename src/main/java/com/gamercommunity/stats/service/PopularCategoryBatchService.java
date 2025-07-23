@@ -24,10 +24,10 @@ public class PopularCategoryBatchService {
     // 일간 인기 게시판 Top 7 선정
     @Transactional
     public void updateDailyTopBoards(LocalDate date) {
-        // 1. 모든 플래그 초기화
+        //모든 플래그 초기화
         dailyStatsRepository.resetAllTopFlags(date);
         
-        // 2. 상위 7개 플래그 설정
+        //상위 7개 플래그 설정
         dailyStatsRepository.markTopN(date, TOP_N);
         
         log.info("일간 인기 게시판 Top {} 선정 완료: {}", TOP_N, date);
@@ -36,10 +36,9 @@ public class PopularCategoryBatchService {
     // 주간 인기 게시판 Top 7 선정
     @Transactional
     public void updateWeeklyTopBoards(int year, int week) {
-        // 1. 모든 플래그 초기화
+        //모든 플래그 초기화
         weeklyStatsRepository.resetAllTopFlags(year, week);
-        
-        // 2. 상위 7개 플래그 설정
+        //상위 7개 플래그 설정
         weeklyStatsRepository.markTopN(year, week, TOP_N);
         
         log.info("주간 인기 게시판 Top {} 선정 완료: {}-W{}", TOP_N, year, week);
@@ -48,10 +47,10 @@ public class PopularCategoryBatchService {
     // 월간 인기 게시판 Top 7 선정
     @Transactional
     public void updateMonthlyTopBoards(String yearMonth) {
-        // 1. 모든 플래그 초기화
+        //모든 플래그 초기화
         monthlyStatsRepository.resetAllTopFlags(yearMonth);
         
-        // 2. 상위 7개 플래그 설정
+        //상위 7개 플래그 설정
         monthlyStatsRepository.markTopN(yearMonth, TOP_N);
         
         log.info("월간 인기 게시판 Top {} 선정 완료: {}", TOP_N, yearMonth);

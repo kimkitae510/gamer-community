@@ -16,7 +16,7 @@ public interface CategoryDailyStatsRepository extends JpaRepository<CategoryDail
     @Query("SELECT s FROM CategoryDailyStats s WHERE s.category.id = :categoryId AND s.date = :date")
     Optional<CategoryDailyStats> findByCategoryIdAndDate(@Param("categoryId") Long categoryId, @Param("date") LocalDate date);
 
-    // UPSERT: 있으면 +1, 없으면 INSERT
+    // 게시판에 오늘 게시글 카운트 점수 있으면 +1, 없으면 INSERT
     @Modifying
     @Query(value = """
         INSERT INTO category_daily_stats (category_id, date, post_count, is_top)

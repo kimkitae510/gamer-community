@@ -97,6 +97,9 @@ public class SecurityConfig {
                         // 인기글 (전체 공개)
                         .requestMatchers("/api/popular/**").permitAll()
 
+                        // 인기 게시판 (전체 공개)
+                        .requestMatchers("/api/top-categories/**").permitAll()
+
                         // 게시글 조회 (GET만 허용)
                         .requestMatchers(HttpMethod.GET, "/api/posts/category/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/posts/{id}").permitAll()

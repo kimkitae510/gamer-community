@@ -10,10 +10,10 @@ import java.util.List;
 
 public interface CategoryMonthlyStatsRepository extends JpaRepository<CategoryMonthlyStats, Long> {
 
-    // UPSERT: 있으면 +1, 없으면 INSERT
+    // 게시판에 이번달 게시글 카운트 점수 있으면 +1, 없으면 INSERT
     @Modifying
     @Query(value = """
-        INSERT INTO category_monthly_stats (category_id, year_month, post_count, is_top)
+        INSERT INTO category_monthly_stats (category_id, `year_month`, post_count, is_top)
         VALUES (:categoryId, :yearMonth, 1, false)
         ON DUPLICATE KEY UPDATE post_count = post_count + 1
         """, nativeQuery = true)
@@ -30,7 +30,7 @@ public interface CategoryMonthlyStatsRepository extends JpaRepository<CategoryMo
     @Query(value = """
         UPDATE category_monthly_stats 
         SET is_top = true 
-        WHERE year_month = :yearMonth 
+        WHERE `year_month` = :yearMonth 
         ORDER BY post_count DESC 
         LIMIT :limit
         """, nativeQuery = true)
