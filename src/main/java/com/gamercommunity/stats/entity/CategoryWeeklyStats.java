@@ -29,10 +29,14 @@ public class CategoryWeeklyStats {
     @Column(nullable = false)
     private Integer year;
 
+    // ISO 주차 (1~53)
     @Column(nullable = false)
     private Integer week;
 
     @Column(name = "post_count", nullable = false)
     private Long postCount;
 
+    @Column(name = "is_top", nullable = false)
+    @Builder.Default
+    private Boolean isTop = false;
 }

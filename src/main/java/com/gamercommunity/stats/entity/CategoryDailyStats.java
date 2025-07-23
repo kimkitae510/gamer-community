@@ -34,4 +34,7 @@ public class CategoryDailyStats {
     @Column(name = "post_count", nullable = false)
     private Long postCount;
 
+    @Column(name = "is_top", nullable = false)
+    @Builder.Default
+    private Boolean isTop = false;
 }

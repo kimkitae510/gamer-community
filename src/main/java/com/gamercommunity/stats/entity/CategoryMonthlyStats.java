@@ -26,10 +26,14 @@ public class CategoryMonthlyStats {
     @JoinColumn(name = "category_id", nullable = false)
     private Category category;
 
+    // "2026-02" 형식
     @Column(name = "year_month", nullable = false, length = 7)
     private String yearMonth;
 
     @Column(name = "post_count", nullable = false)
     private Long postCount;
 
+    @Column(name = "is_top", nullable = false)
+    @Builder.Default
+    private Boolean isTop = false;
 }
