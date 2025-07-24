@@ -19,7 +19,7 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
     List<Category> findByParentIdOrderByCreatedAtDesc(Long parentId);
 
 
-    // 장르별 카테고리 목록 조회 (CategoryGenre 조인)
+    // 장르별 카테고리 목록 조회
     @Query("""
         SELECT DISTINCT c FROM Category c 
         JOIN CategoryGenre cg ON cg.category = c
@@ -45,7 +45,6 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
     void recalculateRating(@Param("categoryId") Long categoryId);
 
 
-
     // 리뷰 개수 증가
     @Modifying
     @Query("UPDATE Category c SET c.reviewCount = c.reviewCount + 1 WHERE c.id = :categoryId")
@@ -65,6 +64,18 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
     @Modifying
     @Query("UPDATE Category c SET c.postCount = CASE WHEN c.postCount > 0 THEN c.postCount - 1 ELSE 0 END WHERE c.id = :categoryId")
     void decrementPostCount(@Param("categoryId") Long categoryId);
+
+    // 신설 게시판 조회 (최신순, 최대 8개)
+    @Query("SELECT c FROM Category c WHERE c.isNew = true ORDER BY c.createdAt DESC")
+    List<Category> findNewCategories();
+
+    // isNew = true인 게시판 개수
+    @Query("SELECT COUNT(c) FROM Category c WHERE c.isNew = true")
+    long countNewCategories();
+
+    // isNew = true인 게시판 중 가장 오래된 것
+    @Query("SELECT c FROM Category c WHERE c.isNew = true ORDER BY c.createdAt ASC")
+    List<Category> findOldestNewCategory();
 
 }
 

@@ -97,4 +97,10 @@ public class CategoryController {
         return ResponseEntity.ok(categoryService.findChildById(childId));
     }
 
+    // 신설 게시판 목록 조회 (최대 8개)
+    @GetMapping("/new")
+    public ResponseEntity<List<CategoryResponse>> getNewCategories() {
+        return ResponseEntity.ok(categoryService.getNewCategories());
+    }
+
 }

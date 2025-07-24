@@ -1,6 +1,5 @@
 package com.gamercommunity.category.entity;
 
-import com.gamercommunity.genre.entity.Genre;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -10,10 +9,6 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 
 @Entity
 @Getter
@@ -32,21 +27,21 @@ public class Category {
     @Column(nullable = false)
     private boolean writable;
 
+    // 단방향 관계로 변경
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "parent_id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
     private Category parent;
 
-    @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL, orphanRemoval = true)
-    @OrderBy("id ASC")
-    private List<Category> children = new ArrayList<>();
-
     private String imageUrl;
 
-    //반정규화 컬럼
+    // 반정규화 컬럼
     private Double rating = 0.0;
     private Long reviewCount = 0L;
     private Long postCount = 0L;
 
+    // 신설 게시판 플래그
+    @Column(nullable = false)
+    private boolean isNew = false;
 
     @CreatedDate
     private LocalDateTime createdAt;
@@ -61,6 +56,7 @@ public class Category {
         this.rating = 0.0;
         this.reviewCount = 0L;
         this.postCount = 0L;
+        this.isNew = false;
     }
 
     // 이미지 URL 변경
@@ -74,6 +70,16 @@ public class Category {
             throw new IllegalArgumentException("카테고리 이름은 필수입니다.");
         }
         this.name = name;
+    }
+
+    // 신설 게시판으로 설정
+    public void markAsNew() {
+        this.isNew = true;
+    }
+
+    // 신설 게시판 해제
+    public void unmarkAsNew() {
+        this.isNew = false;
     }
 
 }

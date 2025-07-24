@@ -73,6 +73,8 @@ public class CategoryService {
 
         Category saved = categoryRepository.save(category);
 
+        // 신설 게시판 관리
+        manageNewCategory(saved);
 
         Set<Genre> genres = validateAndGetGenres(categoryRequest.getGenreId());
         for (Genre genre : genres) {
@@ -196,9 +198,38 @@ public class CategoryService {
         return toCategoryResponse(category);
     }
 
+    // 신설 게시판 목록 조회 (최대 8개)
+    @Transactional(readOnly = true)
+    public List<CategoryResponse> getNewCategories() {
+        List<Category> categories = categoryRepository.findNewCategories();
+        return categories.stream()
+                .limit(10)
+                .map(this::toCategoryResponse)
+                .toList();
+    }
+
 
 
     // =============================== 헬퍼 메서드 ==========================================================================
+
+    // 신설 게시판 관리 로직
+    private void manageNewCategory(Category newCategory) {
+        // 새 카테고리를 신설로 표시
+        newCategory.markAsNew();
+        
+        // 현재 신설 게시판 개수 확인
+        long newCategoryCount = categoryRepository.countNewCategories();
+        
+        // 10개를 초과하면 가장 오래된 신설 게시판 해제
+        if (newCategoryCount > 10) {
+            List<Category> oldestNew = categoryRepository.findOldestNewCategory();
+            if (!oldestNew.isEmpty()) {
+                Category oldest = oldestNew.get(0);
+                oldest.unmarkAsNew();
+                categoryRepository.save(oldest);
+            }
+        }
+    }
 
     private void checkLevel3Permission(String loginId) {
         User user = userRepository.findByLoginId(loginId)
