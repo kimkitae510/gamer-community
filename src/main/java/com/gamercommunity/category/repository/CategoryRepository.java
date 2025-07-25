@@ -1,6 +1,8 @@
 package com.gamercommunity.category.repository;
 
 import com.gamercommunity.category.entity.Category;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -18,6 +20,8 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
     //게임기종별 게임목록 최신순
     List<Category> findByParentIdOrderByCreatedAtDesc(Long parentId);
 
+    // 부모 카테고리별 정렬 (페이징 지원)
+    Page<Category> findByParentId(Long parentId, Pageable pageable);
 
     // 장르별 카테고리 목록 조회
     @Query("""
@@ -29,6 +33,18 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
     """)
     List<Category> findByParentIdAndGenreIdWithGenres(@Param("parentId") Long parentId, @Param("genreId") Long genreId);
 
+    // 장르별 카테고리 목록 조회
+    @Query("""
+        SELECT DISTINCT c FROM Category c 
+        JOIN CategoryGenre cg ON cg.category = c
+        WHERE c.parent.id = :parentId 
+        AND cg.genre.id = :genreId
+    """)
+    Page<Category> findByParentIdAndGenreId(
+        @Param("parentId") Long parentId, 
+        @Param("genreId") Long genreId,
+        Pageable pageable
+    );
 
     // 평점 재계산 및 업데이트 (삭제된 리뷰 제외)
     @Modifying
@@ -43,7 +59,6 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
         WHERE c.id = :categoryId
     """)
     void recalculateRating(@Param("categoryId") Long categoryId);
-
 
     // 리뷰 개수 증가
     @Modifying
@@ -65,7 +80,7 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
     @Query("UPDATE Category c SET c.postCount = CASE WHEN c.postCount > 0 THEN c.postCount - 1 ELSE 0 END WHERE c.id = :categoryId")
     void decrementPostCount(@Param("categoryId") Long categoryId);
 
-    // 신설 게시판 조회 (최신순, 최대 8개)
+    // 신설 게시판 조회 (최신순, 최대 10개)
     @Query("SELECT c FROM Category c WHERE c.isNew = true ORDER BY c.createdAt DESC")
     List<Category> findNewCategories();
 
@@ -78,7 +93,3 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
     List<Category> findOldestNewCategory();
 
 }
-
-
-
-

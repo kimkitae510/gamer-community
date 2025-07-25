@@ -16,6 +16,10 @@ import com.gamercommunity.global.exception.custom.InvalidRequestException;
 import com.gamercommunity.user.entity.User;
 import com.gamercommunity.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -206,6 +210,57 @@ public class CategoryService {
                 .limit(10)
                 .map(this::toCategoryResponse)
                 .toList();
+    }
+
+    // 부모 카테고리별 게임 목록 조회 (정렬 + 페이징)
+    @Transactional(readOnly = true)
+    public Page<CategoryResponse> getCategoriesWithSort(
+            Long parentId, 
+            int page, 
+            int size, 
+            String sortBy) {
+        
+        Sort sort = switch(sortBy) {
+            case "popular" -> Sort.by("postCount").descending();
+            case "rating" -> Sort.by("rating").descending();
+            case "latest" -> Sort.by("createdAt").descending();
+            case "oldest" -> Sort.by("createdAt").ascending();
+            default -> Sort.by("createdAt").descending();
+        };
+        
+        Pageable pageable = PageRequest.of(page, size, sort);
+        Page<Category> categoryPage = categoryRepository.findByParentId(parentId, pageable);
+        
+        return categoryPage.map(this::toCategoryResponse);
+    }
+
+    // 장르별 카테고리 목록 조회 (정렬 + 페이징)
+    @Transactional(readOnly = true)
+    public Page<CategoryResponse> getCategoriesByGenreWithSort(
+            Long parentId, 
+            Long genreId, 
+            int page, 
+            int size, 
+            String sortBy) {
+
+        categoryRepository.findById(parentId)
+                .orElseThrow(() -> new EntityNotFoundException("부모 카테고리 ID가 존재하지 않음"));
+
+        genreRepository.findById(genreId)
+                .orElseThrow(() -> new EntityNotFoundException("장르가 존재하지 않음"));
+
+        Sort sort = switch(sortBy) {
+            case "popular" -> Sort.by("postCount").descending();
+            case "rating" -> Sort.by("rating").descending();
+            case "latest" -> Sort.by("createdAt").descending();
+            case "oldest" -> Sort.by("createdAt").ascending();
+            default -> Sort.by("createdAt").descending();
+        };
+
+        Pageable pageable = PageRequest.of(page, size, sort);
+        Page<Category> categoryPage = categoryRepository.findByParentIdAndGenreId(parentId, genreId, pageable);
+
+        return categoryPage.map(this::toCategoryResponse);
     }
 
 

@@ -5,6 +5,7 @@ import com.gamercommunity.category.dto.CategoryRequest;
 import com.gamercommunity.category.dto.CategoryResponse;
 import com.gamercommunity.category.service.CategoryService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -97,10 +98,31 @@ public class CategoryController {
         return ResponseEntity.ok(categoryService.findChildById(childId));
     }
 
-    // 신설 게시판 목록 조회 (최대 8개)
+    // 신설 게시판 목록 조회 (최대 10개)
     @GetMapping("/new")
     public ResponseEntity<List<CategoryResponse>> getNewCategories() {
         return ResponseEntity.ok(categoryService.getNewCategories());
+    }
+
+    // 부모 카테고리별 게임 목록 조회 (정렬 + 페이징)
+    @GetMapping("/parents/{parentId}/sorted")
+    public ResponseEntity<Page<CategoryResponse>> getCategoriesWithSort(
+            @PathVariable Long parentId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int size,
+            @RequestParam(defaultValue = "latest") String sortBy) {
+        return ResponseEntity.ok(categoryService.getCategoriesWithSort(parentId, page, size, sortBy));
+    }
+
+    // 장르별 카테고리 목록 조회 (정렬 + 페이징)
+    @GetMapping("/parents/{parentId}/genres/{genreId}/sorted")
+    public ResponseEntity<Page<CategoryResponse>> getCategoriesByGenreWithSort(
+            @PathVariable Long parentId,
+            @PathVariable Long genreId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int size,
+            @RequestParam(defaultValue = "latest") String sortBy) {
+        return ResponseEntity.ok(categoryService.getCategoriesByGenreWithSort(parentId, genreId, page, size, sortBy));
     }
 
 }
