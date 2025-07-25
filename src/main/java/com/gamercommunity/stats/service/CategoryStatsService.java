@@ -80,6 +80,7 @@ public class CategoryStatsService {
                             .postCount(s.getPostCount())
                             .rank(rank.getAndIncrement())
                             .rating(s.getCategory().getRating())
+                            .ratingCount(s.getCategory().getReviewCount())
                             .imageUrl(s.getCategory().getImageUrl())
                             .genres(genreNames)
                             .build();
@@ -113,6 +114,7 @@ public class CategoryStatsService {
                             .postCount(s.getPostCount())
                             .rank(rank.getAndIncrement())
                             .rating(s.getCategory().getRating())
+                            .ratingCount(s.getCategory().getReviewCount())
                             .imageUrl(s.getCategory().getImageUrl())
                             .genres(genreNames)
                             .build();
@@ -143,6 +145,7 @@ public class CategoryStatsService {
                             .postCount(s.getPostCount())
                             .rank(rank.getAndIncrement())
                             .rating(s.getCategory().getRating())
+                            .ratingCount(s.getCategory().getReviewCount())
                             .imageUrl(s.getCategory().getImageUrl())
                             .genres(genreNames)
                             .build();

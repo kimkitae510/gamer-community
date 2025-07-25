@@ -15,6 +15,7 @@ public class TopCategoryResponse {
     private Long postCount;
     private Integer rank;
     private Double rating;
+    private Long ratingCount;
     private String imageUrl;
     private List<String> genres;
 }

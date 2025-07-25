@@ -10,7 +10,7 @@ import lombok.Getter;
 public class PostLikeResponse {
 
     private Long id;
-    private boolean liked;
+    private boolean isLiked;
     private long likeCount;
 
 }

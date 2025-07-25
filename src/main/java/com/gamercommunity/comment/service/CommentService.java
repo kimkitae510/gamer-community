@@ -151,7 +151,7 @@ public class CommentService {
                 // 대댓글
                 CommentResponse parentDto = dtoMap.get(c.getParent().getId());
                 if (parentDto != null) {
-                    parentDto.getChildren().add(dto);
+                    parentDto.getReplies().add(dto);
                 }
             }
         }

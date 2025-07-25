@@ -13,11 +13,11 @@ import java.util.List;
 public class CommentResponse {
     private Long id;
     private String content;
-    private String authorName;
+    private String author;
     private String authorId;
     private String createdAt;
     private String updatedAt;
-    private List<CommentResponse> children;
+    private List<CommentResponse> replies;
     private String postAuthorName;
     private int likeCount;
 
@@ -36,11 +36,11 @@ public class CommentResponse {
         return CommentResponse.builder()
                 .id(id)
                 .content(content)
-                .authorName(authorName)
+                .author(authorName)
                 .authorId(authorId)
                 .createdAt(createdAt.toString())
                 .updatedAt(updatedAt.toString())
-                .children(new ArrayList<>())
+                .replies(new ArrayList<>())
                 .likeCount(likeCount)
                 .isLiked(false)
                 .build();

@@ -11,7 +11,6 @@ public class CommentLikeResponse {
 
     private Long id;
     private int likeCount;
-    private boolean liked;
-
+    private boolean isLiked;
 
 }

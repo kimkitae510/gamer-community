@@ -61,7 +61,7 @@ public class CommentLikeService {
         return CommentLikeResponse.builder()
                 .id(commentId)
                 .likeCount(likeCount != null ? likeCount : 0)
-                .liked(liked)
+                .isLiked(liked)
                 .build();
     }
 
