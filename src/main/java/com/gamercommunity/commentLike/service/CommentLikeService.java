@@ -65,6 +65,24 @@ public class CommentLikeService {
                 .build();
     }
 
+    // 개별 댓글 좋아요 상태 조회
+    @Transactional(readOnly = true)
+    public CommentLikeResponse getLikeStatusSingle(Long commentId, String loginId) {
+        Comment comment = commentRepository.findById(commentId)
+                .orElseThrow(() -> new EntityNotFoundException("댓글", commentId));
+
+        User user = userRepository.findByLoginId(loginId)
+                .orElseThrow(() -> new EntityNotFoundException("사용자", "loginId=" + loginId));
+
+        Optional<CommentLike> existingLike = commentLikeRepository.findByUserAndComment(user, comment);
+
+        return CommentLikeResponse.builder()
+                .id(commentId)
+                .likeCount(comment.getLikeCount())
+                .isLiked(existingLike.isPresent())
+                .build();
+    }
+
     // 댓글목록 좋아요 상태조회
     @Transactional(readOnly = true)
     public Map<Long, Boolean> getLikeStatus(List<Long> commentIds, String loginId) {
@@ -80,4 +98,3 @@ public class CommentLikeService {
         return result;
     }
 }
-

@@ -25,6 +25,14 @@ public class CommentLikeController {
         return ResponseEntity.ok(commentLikeResponse);
     }
 
+    // 개별 댓글 좋아요 상태 조회
+    @GetMapping("/{commentId}/like-status")
+    public ResponseEntity<CommentLikeResponse> getLikeStatus(@PathVariable Long commentId) {
+        String loginId = SecurityUtil.getRequiredLoginId();
+        CommentLikeResponse likeStatus = commentLikeService.getLikeStatusSingle(commentId, loginId);
+        return ResponseEntity.ok(likeStatus);
+    }
+
     // 댓글목록 좋아요 상태조회
     @GetMapping("/like-status")
     public ResponseEntity<Map<Long, Boolean>> getLikeStatusBulk(@RequestParam List<Long> commentIds) {
