@@ -17,7 +17,8 @@ import static com.gamercommunity.category.entity.QCategory.category;
 
 @Repository
 @RequiredArgsConstructor
-public class PostRepositoryImpl implements PostRepositoryCustom {
+public class
+PostRepositoryImpl implements PostRepositoryCustom {
 
     private final JPAQueryFactory queryFactory;
 

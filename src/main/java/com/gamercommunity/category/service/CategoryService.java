@@ -105,10 +105,7 @@ public class CategoryService {
     @Transactional(readOnly = true)
     public List<CategoryResponse> findChild(Long parentId) {
         List<Category> categories = categoryRepository.findByParentIdOrderByCreatedAtDesc(parentId);
-
-        return categories.stream()
-                .map(this::toCategoryResponse)
-                .toList();
+        return toCategoryResponseList(categories);
     }
 
     // 장르별 카테고리 목록 조회
@@ -124,10 +121,7 @@ public class CategoryService {
 
 
         List<Category> categories = categoryRepository.findByParentIdAndGenreIdWithGenres(parentId, genreId);
-
-        return categories.stream()
-                .map(this::toCategoryResponse)
-                .toList();
+        return toCategoryResponseList(categories);
     }
 
     // 자식 카테고리 장르 수정
@@ -206,10 +200,10 @@ public class CategoryService {
     @Transactional(readOnly = true)
     public List<CategoryResponse> getNewCategories() {
         List<Category> categories = categoryRepository.findNewCategories();
-        return categories.stream()
+        List<Category> limitedCategories = categories.stream()
                 .limit(10)
-                .map(this::toCategoryResponse)
                 .toList();
+        return toCategoryResponseList(limitedCategories);
     }
 
     // 부모 카테고리별 게임 목록 조회 (정렬 + 페이징)
@@ -231,7 +225,15 @@ public class CategoryService {
         Pageable pageable = PageRequest.of(page, size, sort);
         Page<Category> categoryPage = categoryRepository.findByParentId(parentId, pageable);
         
-        return categoryPage.map(this::toCategoryResponse);
+        // N+1 문제 해결을 위해 일괄 조회
+        List<Category> categories = categoryPage.getContent();
+        List<CategoryResponse> responses = toCategoryResponseList(categories);
+        
+        return new org.springframework.data.domain.PageImpl<>(
+            responses, 
+            pageable, 
+            categoryPage.getTotalElements()
+        );
     }
 
     // 장르별 카테고리 목록 조회 (정렬 + 페이징)
@@ -260,7 +262,15 @@ public class CategoryService {
         Pageable pageable = PageRequest.of(page, size, sort);
         Page<Category> categoryPage = categoryRepository.findByParentIdAndGenreId(parentId, genreId, pageable);
 
-        return categoryPage.map(this::toCategoryResponse);
+        // N+1 문제 해결을 위해 일괄 조회
+        List<Category> categories = categoryPage.getContent();
+        List<CategoryResponse> responses = toCategoryResponseList(categories);
+        
+        return new org.springframework.data.domain.PageImpl<>(
+            responses, 
+            pageable, 
+            categoryPage.getTotalElements()
+        );
     }
 
 
@@ -329,6 +339,35 @@ public class CategoryService {
                 .collect(Collectors.toList());
         
         return CategoryResponse.fromChild(category, genreResponses);
+    }
+
+    // 여러 카테고리의 장르조회
+    private List<CategoryResponse> toCategoryResponseList(List<Category> categories) {
+        if (categories.isEmpty()) {
+            return List.of();
+        }
+
+        List<Long> categoryIds = categories.stream()
+                .map(Category::getId)
+                .collect(Collectors.toList());
+
+        List<CategoryGenre> categoryGenres = categoryGenreRepository.findByCategoryIdIn(categoryIds);
+
+        java.util.Map<Long, List<Genre>> genreMap = categoryGenres.stream()
+                .collect(Collectors.groupingBy(
+                        cg -> cg.getCategory().getId(),
+                        Collectors.mapping(CategoryGenre::getGenre, Collectors.toList())
+                ));
+
+        return categories.stream()
+                .map(category -> {
+                    List<Genre> genres = genreMap.getOrDefault(category.getId(), List.of());
+                    List<GenreResponse> genreResponses = genres.stream()
+                            .map(GenreResponse::from)
+                            .collect(Collectors.toList());
+                    return CategoryResponse.fromChild(category, genreResponses);
+                })
+                .collect(Collectors.toList());
     }
 
 }

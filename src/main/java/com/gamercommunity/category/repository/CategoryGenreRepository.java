@@ -16,4 +16,8 @@ public interface CategoryGenreRepository extends JpaRepository<CategoryGenre, Lo
     // 카테고리의 장르 조회
     @Query("SELECT cg.genre FROM CategoryGenre cg WHERE cg.category.id = :categoryId")
     List<Genre> findGenresByCategoryId(@Param("categoryId") Long categoryId);
+
+    // 여러 카테고리의 장르 조회
+    @Query("SELECT cg FROM CategoryGenre cg JOIN FETCH cg.genre WHERE cg.category.id IN :categoryIds")
+    List<CategoryGenre> findByCategoryIdIn(@Param("categoryIds") List<Long> categoryIds);
 }
