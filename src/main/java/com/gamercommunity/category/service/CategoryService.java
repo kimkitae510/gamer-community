@@ -111,17 +111,17 @@ public class CategoryService {
     // 장르별 카테고리 목록 조회
     @Transactional(readOnly = true)
     public List<CategoryResponse> getCategoriesByGenre(Long parentId, Long genreId) {
-
         categoryRepository.findById(parentId)
                 .orElseThrow(() -> new EntityNotFoundException("부모 카테고리 ID가 존재하지 않음"));
-
 
         genreRepository.findById(genreId)
                 .orElseThrow(() -> new EntityNotFoundException("장르가 존재하지 않음"));
 
-
-        List<Category> categories = categoryRepository.findByParentIdAndGenreIdWithGenres(parentId, genreId);
-        return toCategoryResponseList(categories);
+        // 페이징 없이 전체 조회 (초기 8개 + 더보기는 프론트엔드에서 처리)
+        Pageable pageable = PageRequest.of(0, 100, Sort.by("createdAt").descending());
+        Page<Category> categoryPage = categoryRepository.findByParentIdAndGenreId(parentId, genreId, pageable);
+        
+        return toCategoryResponseList(categoryPage.getContent());
     }
 
     // 자식 카테고리 장르 수정
@@ -224,8 +224,7 @@ public class CategoryService {
         
         Pageable pageable = PageRequest.of(page, size, sort);
         Page<Category> categoryPage = categoryRepository.findByParentId(parentId, pageable);
-        
-        // N+1 문제 해결을 위해 일괄 조회
+
         List<Category> categories = categoryPage.getContent();
         List<CategoryResponse> responses = toCategoryResponseList(categories);
         
@@ -262,7 +261,6 @@ public class CategoryService {
         Pageable pageable = PageRequest.of(page, size, sort);
         Page<Category> categoryPage = categoryRepository.findByParentIdAndGenreId(parentId, genreId, pageable);
 
-        // N+1 문제 해결을 위해 일괄 조회
         List<Category> categories = categoryPage.getContent();
         List<CategoryResponse> responses = toCategoryResponseList(categories);
         

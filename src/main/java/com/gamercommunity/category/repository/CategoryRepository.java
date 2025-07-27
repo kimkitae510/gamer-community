@@ -23,17 +23,7 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
     // 부모 카테고리별 정렬 (페이징 지원)
     Page<Category> findByParentId(Long parentId, Pageable pageable);
 
-    // 장르별 카테고리 목록 조회
-    @Query("""
-        SELECT DISTINCT c FROM Category c 
-        JOIN CategoryGenre cg ON cg.category = c
-        WHERE c.parent.id = :parentId 
-        AND cg.genre.id = :genreId
-        ORDER BY c.createdAt DESC
-    """)
-    List<Category> findByParentIdAndGenreIdWithGenres(@Param("parentId") Long parentId, @Param("genreId") Long genreId);
-
-    // 장르별 카테고리 목록 조회
+    // 장르별 카테고리 목록 조회 (페이징 지원)
     @Query("""
         SELECT DISTINCT c FROM Category c 
         JOIN CategoryGenre cg ON cg.category = c
