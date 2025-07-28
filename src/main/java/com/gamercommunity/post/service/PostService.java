@@ -16,6 +16,8 @@ import com.gamercommunity.stats.service.CategoryStatsService;
 import com.gamercommunity.user.entity.User;
 import com.gamercommunity.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -142,5 +144,17 @@ public class PostService {
         return posts.stream()
                 .map(PostResponse::from)
                 .collect(Collectors.toList());
+    }
+
+    // 카테고리별 게시글 목록 조회 (페이징)
+    @Transactional(readOnly = true)
+    public Page<PostResponse> getPostsByCategoryWithPaging(Long categoryId, PostSort postSort, Tag tag, Pageable pageable) {
+
+        categoryRepository.findById(categoryId)
+                .orElseThrow(() -> new EntityNotFoundException("카테고리", categoryId));
+
+        Page<Post> postPage = postRepository.findByCategoryWithPaging(categoryId, tag, postSort, pageable);
+
+        return postPage.map(PostResponse::from);
     }
 }

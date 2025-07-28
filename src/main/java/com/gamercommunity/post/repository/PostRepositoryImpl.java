@@ -7,6 +7,9 @@ import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -36,6 +39,36 @@ PostRepositoryImpl implements PostRepositoryCustom {
                 .orderBy(getOrderSpecifier(postSort))
                 .distinct()
                 .fetch();
+    }
+
+    @Override
+    public Page<Post> findByCategoryWithPaging(Long categoryId, Tag tag, PostSort postSort, Pageable pageable) {
+        List<Post> content = queryFactory
+                .selectFrom(post)
+                .join(post.author, user).fetchJoin()
+                .join(post.category, category).fetchJoin()
+                .where(
+                        categoryIdEq(categoryId),
+                        tagEq(tag),
+                        post.status.eq(com.gamercommunity.global.enums.ContentStatus.ACTIVE)
+                )
+                .orderBy(getOrderSpecifier(postSort))
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .distinct()
+                .fetch();
+
+        Long total = queryFactory
+                .select(post.count())
+                .from(post)
+                .where(
+                        categoryIdEq(categoryId),
+                        tagEq(tag),
+                        post.status.eq(com.gamercommunity.global.enums.ContentStatus.ACTIVE)
+                )
+                .fetchOne();
+
+        return new PageImpl<>(content, pageable, total != null ? total : 0);
     }
 
     // 동적 쿼리 조건

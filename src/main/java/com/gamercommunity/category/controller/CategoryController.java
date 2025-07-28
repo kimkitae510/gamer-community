@@ -110,8 +110,7 @@ public class CategoryController {
             @PathVariable Long parentId,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "latest") String sortBy) {
-        // 기본 8개, 그 외는 4개
-        int size = (page == 0) ? 8 : 4;
+        int size = 4;
         return ResponseEntity.ok(categoryService.getCategoriesWithSort(parentId, page, size, sortBy));
     }
 
@@ -122,8 +121,7 @@ public class CategoryController {
             @PathVariable Long genreId,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "latest") String sortBy) {
-        // 기본 8개, 그 외는 4개
-        int size = (page == 0) ? 8 : 4;
+        int size = 4;
         return ResponseEntity.ok(categoryService.getCategoriesByGenreWithSort(parentId, genreId, page, size, sortBy));
     }
 

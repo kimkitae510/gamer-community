@@ -8,10 +8,14 @@ import com.gamercommunity.post.entity.PostSort;
 import com.gamercommunity.post.entity.Tag;
 import com.gamercommunity.post.service.PostService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+
 
 @RequiredArgsConstructor
 @RestController
@@ -62,11 +66,23 @@ public class PostController {
     }
 
 
-    // 카테고리별 게시글 목록
+    // 카테고리별 게시글 목록 (페이징 없음)
     @GetMapping("/category/{categoryId}")
     public ResponseEntity<List<PostResponse>> getPostsByCategory(@PathVariable Long categoryId,
                                                                  @RequestParam(name ="sort",defaultValue = "LATEST") PostSort postSort,
                                                                  @RequestParam(name ="tag", required = false) Tag tag) {
         return ResponseEntity.ok(postService.getPostsByCategoryAndSort(categoryId,postSort,tag));
+    }
+
+    // 카테고리별 게시글 목록 (페이징)
+    @GetMapping("/category/{categoryId}/paged")
+    public ResponseEntity<Page<PostResponse>> getPostsByCategoryPaged(
+            @PathVariable Long categoryId,
+            @RequestParam(name ="sort",defaultValue = "LATEST") PostSort postSort,
+            @RequestParam(name ="tag", required = false) Tag tag,
+            @RequestParam(defaultValue = "0") int page) {
+        
+        Pageable pageable = PageRequest.of(page, 10);
+        return ResponseEntity.ok(postService.getPostsByCategoryWithPaging(categoryId, postSort, tag, pageable));
     }
 }
