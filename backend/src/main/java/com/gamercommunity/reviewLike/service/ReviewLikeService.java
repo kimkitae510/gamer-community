@@ -54,7 +54,7 @@ public class ReviewLikeService {
         }
 
         // 엔티티 값 직접 계산 (추가 SELECT 불필요)
-        long updatedLikeCount = review.getLikeCount() + (liked ? 1 : -1);
+        int updatedLikeCount = review.getLikeCount() + (liked ? 1 : -1);
 
         return ReviewLikeResponse.builder()
                 .id(reviewId)
