@@ -10,10 +10,7 @@ import org.springframework.web.client.RestTemplate;
 import java.util.List;
 import java.util.Map;
 
-/**
- * OpenAI API를 호출하여 AI 답변을 생성한다.
- * 비동기 스레드(llmExecutor)에서 호출되며, 동기 블로킹 방식이다.
- */
+//비동기 스레드(llmExecutor)에서 호출, 동기 블로킹 방식 
 @Slf4j
 @Service
 public class LlmService {
