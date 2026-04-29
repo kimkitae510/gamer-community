@@ -18,6 +18,44 @@
 
 ---
 
+## ERD
+
+```mermaid
+erDiagram
+    User ||--o{ Post : writes
+    User ||--o{ Comment : writes
+    User ||--o{ Review : writes
+    User ||--o{ PostLike : creates
+    User ||--o{ CommentLike : creates
+    User ||--o{ ReviewLike : creates
+    User ||--o{ AiComment : requests
+    User ||--|| AiUsage : has
+    User ||--|| RefreshToken : has
+
+    Category }o--o| Category : parent
+    Category ||--o{ CategoryGenre : tagged
+    Category ||--o{ Post : contains
+    Category ||--o{ Review : has
+    Category ||--o{ CategoryDailyStats : aggregated
+    Category ||--o{ CategoryWeeklyStats : aggregated
+    Category ||--o{ CategoryMonthlyStats : aggregated
+
+    Genre ||--o{ CategoryGenre : tagged
+
+    Post ||--o{ Comment : has
+    Post ||--o{ PostLike : receives
+    Post ||--o{ AiComment : has
+    Post ||--|| PopularScore : tracked
+
+    Comment }o--o| Comment : replies
+    Comment ||--o{ CommentLike : receives
+
+    Review }o--o| Review : replies
+    Review ||--o{ ReviewLike : receives
+```
+
+---
+
 ## Tech Stack
 
 | 구분 | 기술 |
@@ -62,6 +100,18 @@
 ### 인기 게시판 통계
 
 게시판별 활동량(게시글·댓글·추천)을 일간/주간/월간 단위로 집계하는 배치를 운영합니다. 기간별 통계 엔티티를 분리하여 각각의 스케줄러가 독립적으로 실행됩니다.
+
+---
+
+## Optimization
+
+- 단건 SELECT API에서 `@Transactional(readOnly)` 제거로 불필요한 트랜잭션 오버헤드 제거 (목록 조회, 상세 조회 등 적용)
+- FK 제약조건 제거(`ConstraintMode.NO_CONSTRAINT`)로 데드락 방지, 애플리케이션 레벨에서 참조 무결성 보장
+- Soft Delete로 삭제 데이터 보존 및 복구 가능성 확보
+- JPA SELECT 후 UPDATE 방식 대신 `@Modifying` 원자적 UPDATE로 동시성 문제 방지 (`likeCount`, `commentCount`, `postCount`, `reviewCount`, `popularScore` 등 전체 반정규화 컬럼 적용)
+- Fetch Join으로 게시글 상세 조회 시 N+1 문제 방지 (`author`, `category` 즉시 로딩)
+- 반정규화 컬럼(`views`, `likeCount`, `commentCount`, `rating`, `ratingSum`)으로 조회 시 JOIN·COUNT 쿼리 제거
+- JDBC `batchUpdate`로 인메모리 조회수를 한 번의 쿼리로 일괄 반영
 
 ---
 
