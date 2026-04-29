@@ -18,44 +18,6 @@
 
 ---
 
-## ERD
-
-```mermaid
-erDiagram
-    User ||--o{ Post : writes
-    User ||--o{ Comment : writes
-    User ||--o{ Review : writes
-    User ||--o{ PostLike : creates
-    User ||--o{ CommentLike : creates
-    User ||--o{ ReviewLike : creates
-    User ||--o{ AiComment : requests
-    User ||--|| AiUsage : has
-    User ||--|| RefreshToken : has
-
-    Category }o--o| Category : parent
-    Category ||--o{ CategoryGenre : tagged
-    Category ||--o{ Post : contains
-    Category ||--o{ Review : has
-    Category ||--o{ CategoryDailyStats : aggregated
-    Category ||--o{ CategoryWeeklyStats : aggregated
-    Category ||--o{ CategoryMonthlyStats : aggregated
-
-    Genre ||--o{ CategoryGenre : tagged
-
-    Post ||--o{ Comment : has
-    Post ||--o{ PostLike : receives
-    Post ||--o{ AiComment : has
-    Post ||--|| PopularScore : tracked
-
-    Comment }o--o| Comment : replies
-    Comment ||--o{ CommentLike : receives
-
-    Review }o--o| Review : replies
-    Review ||--o{ ReviewLike : receives
-```
-
----
-
 ## Tech Stack
 
 | 구분 | 기술 |
