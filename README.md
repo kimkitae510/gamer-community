@@ -2,7 +2,7 @@
 
 다양한 플랫폼(PlayStation, Xbox, Nintendo, PC, Mobile)의 게이머들이 게임별 게시판에서 공략·리뷰·질문을 나눌 수 있는 게임 커뮤니티입니다.
 
-> **Blog**: [dogtae.tistory.com](https://dogtae.tistory.com/)
+> **Blog**: [dogtae.tistory.com](https://dogtae.tistory.com/) (프로젝트 진행중 발생한 문제와 해결과정 기록)
 
 ---
 
