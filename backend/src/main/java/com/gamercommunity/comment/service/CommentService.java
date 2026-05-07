@@ -31,7 +31,7 @@ public class CommentService {
     private final CommentLikeRepository commentLikeRepository;
     private final PopularScoreService popularScoreService;
 
-    // 댓글 작성 — save + @Modifying 여러 개 → 트랜잭션 필요
+    // 댓글 작성
     @Transactional
     public Long saveComment(CommentCreateRequest commentRequest, String loginId) {
         Post post = postRepository.findById(commentRequest.getPostId())
