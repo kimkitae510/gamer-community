@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.LongAdder;
 
 
 @Slf4j
@@ -21,18 +21,18 @@ public class PostViewFlusher {
     private final JdbcTemplate jdbcTemplate;
 
     //조회수 벌크 flush (실패 시 1회 재시도, 재시도 실패분 반환)
-    public Map<Long, AtomicInteger> flush(Map<Long, AtomicInteger> viewCounts) {
-        Map<Long, AtomicInteger> failed = new HashMap<>();
+    public Map<Long, LongAdder> flush(Map<Long, LongAdder> viewCounts) {
+        Map<Long, LongAdder> failed = new HashMap<>();
 
         if (viewCounts == null || viewCounts.isEmpty()) {
             return failed;
         }
 
-        List<Map.Entry<Long, AtomicInteger>> entries = new ArrayList<>(viewCounts.entrySet());
+        List<Map.Entry<Long, LongAdder>> entries = new ArrayList<>(viewCounts.entrySet());
 
         for (int i = 0; i < entries.size(); i += BATCH_SIZE) {
             int end = Math.min(i + BATCH_SIZE, entries.size());
-            List<Map.Entry<Long, AtomicInteger>> chunk = entries.subList(i, end);
+            List<Map.Entry<Long, LongAdder>> chunk = entries.subList(i, end);
             int chunkNumber = (i / BATCH_SIZE) + 1;
 
             try {
@@ -54,11 +54,11 @@ public class PostViewFlusher {
     }
 
     //벌크 UPDATE
-    private void bulkUpdate(List<Map.Entry<Long, AtomicInteger>> chunk) {
+    private void bulkUpdate(List<Map.Entry<Long, LongAdder>> chunk) {
         StringBuilder sql = new StringBuilder("UPDATE post SET views = views + CASE id ");
         List<Object> params = new ArrayList<>();
 
-        for (Map.Entry<Long, AtomicInteger> entry : chunk) {
+        for (Map.Entry<Long, LongAdder> entry : chunk) {
             sql.append("WHEN ? THEN ? ");
             params.add(entry.getKey());
             params.add(entry.getValue().get());
