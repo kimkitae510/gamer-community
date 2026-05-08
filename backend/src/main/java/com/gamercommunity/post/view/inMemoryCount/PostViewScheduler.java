@@ -9,7 +9,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.LongAdder;
 import java.util.concurrent.locks.ReentrantLock;
 
 
@@ -49,7 +49,7 @@ public class PostViewScheduler {
         try {
             log.info("[ViewFlush] 서버 종료 감지 - 최종 flush 시작");
 
-            Map<Long, AtomicInteger> failed = doFlush(true);
+            Map<Long, LongAdder> failed = doFlush(true);
 
             for (int attempt = 1; attempt <= SHUTDOWN_RETRY_COUNT && !failed.isEmpty(); attempt++) {
                 log.warn("[ViewFlush] 종료 flush 재시도 {}/{} ({}건)", attempt, SHUTDOWN_RETRY_COUNT, failed.size());
@@ -66,8 +66,8 @@ public class PostViewScheduler {
         }
     }
 
-    private Map<Long, AtomicInteger> doFlush(boolean isShutdown) {
-        Map<Long, AtomicInteger> snapshot = postViewInMemoryCount.getAndReset();
+    private Map<Long, LongAdder> doFlush(boolean isShutdown) {
+        Map<Long, LongAdder> snapshot = postViewInMemoryCount.getAndReset();
 
         if (snapshot.isEmpty()) {
             log.debug("[ViewFlush] 업데이트할 조회수 없음, 건너뜀");
@@ -76,7 +76,7 @@ public class PostViewScheduler {
 
         log.info("[ViewFlush] {}건 조회수 DB 반영 시작", snapshot.size());
 
-        Map<Long, AtomicInteger> failed = postViewFlusher.flush(snapshot);
+        Map<Long, LongAdder> failed = postViewFlusher.flush(snapshot);
 
         if (!failed.isEmpty() && !isShutdown) {
             log.warn("[ViewFlush] 실패 {}건 현재 맵에 머지", failed.size());
