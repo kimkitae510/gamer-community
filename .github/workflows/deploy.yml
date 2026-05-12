@@ -5,20 +5,39 @@ on:
     branches: [ main ]
 
 jobs:
-  deploy:
+  check-changes:
     runs-on: ubuntu-latest
+    outputs:
+      backend: ${{ steps.filter.outputs.backend }}
+      frontend: ${{ steps.filter.outputs.frontend }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            backend:
+              - 'backend/**'
+            frontend:
+              - 'frontend/**'
 
+  deploy:
+    needs: check-changes
+    if: needs.check-changes.outputs.backend == 'true' || needs.check-changes.outputs.frontend == 'true'
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
       - name: Set up JDK 17
+        if: needs.check-changes.outputs.backend == 'true'
         uses: actions/setup-java@v4
         with:
           java-version: '17'
           distribution: 'temurin'
 
       - name: Build jar
+        if: needs.check-changes.outputs.backend == 'true'
         run: cd backend && chmod +x gradlew && ./gradlew bootJar
 
       - name: Login to Docker Hub
@@ -28,11 +47,13 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Build and push Backend image
+        if: needs.check-changes.outputs.backend == 'true'
         run: |
           docker build -t kimkitae510/gamercommunity-backend:latest ./backend
           docker push kimkitae510/gamercommunity-backend:latest
 
       - name: Build and push Frontend image
+        if: needs.check-changes.outputs.frontend == 'true'
         run: |
           docker build -t kimkitae510/gamercommunity-frontend:latest ./frontend
           docker push kimkitae510/gamercommunity-frontend:latest
