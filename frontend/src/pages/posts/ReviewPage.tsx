@@ -124,6 +124,14 @@ export default function GameReviewPage() {
       setNewReview("");
       setRating(0);
       setHoverRating(0);
+      
+      // 평점 즉시 반영
+      try {
+        const gameData = await categoryService.getChildById(Number(gameId));
+        setGameRating(gameData.rating || 0);
+        setGameRatingCount(gameData.ratingCount || 0);
+      } catch {}
+      
       alert("리뷰가 작성되었습니다!");
     } catch (err: any) {
       alert(err.response?.data?.message || "이미 리뷰를 작성하셨습니다.");
@@ -148,6 +156,12 @@ export default function GameReviewPage() {
         )
       );
       setEditId(null);
+      // 평점 갱신
+      try {
+        const gameData = await categoryService.getChildById(Number(gameId));
+        setGameRating(gameData.rating || 0);
+        setGameRatingCount(gameData.ratingCount || 0);
+      } catch {}
       alert("수정되었습니다.");
     } catch {
       alert("수정 실패");
@@ -159,6 +173,12 @@ export default function GameReviewPage() {
     try {
       await api.delete(`/reviews/${id}`);
       setReviews((prev) => prev.filter((r) => r.id !== id));
+      // 평점 갱신
+      try {
+        const gameData = await categoryService.getChildById(Number(gameId));
+        setGameRating(gameData.rating || 0);
+        setGameRatingCount(gameData.ratingCount || 0);
+      } catch {}
     } catch {
       alert("삭제 실패");
     }
@@ -297,7 +317,7 @@ export default function GameReviewPage() {
 
         {/* 리뷰 작성 */}
         {!hasUserReviewed && (
-          <div className="bg-gradient-to-br from-white to-neutral-50 rounded-2xl p-8 shadow-md border border-neutral-200 mb-8">
+          <div className="bg-white rounded-2xl p-8 shadow-md border border-neutral-200 mb-8">
             <h2 className="text-2xl font-bold text-neutral-900 mb-6">
               리뷰 작성하기
             </h2>
@@ -307,7 +327,7 @@ export default function GameReviewPage() {
               <div className="text-center py-12 bg-neutral-50 rounded-xl border-2 border-neutral-200">
                 <img 
                   src="/images/animal.png" 
-                  alt="로귵58인 필요" 
+                  alt="로그인 필요" 
                   className="w-20 h-20 mx-auto mb-4 object-contain"
                 />
                 <h3 className="text-xl font-bold text-neutral-900 mb-2">로그인이 필요합니다</h3>
@@ -363,8 +383,8 @@ export default function GameReviewPage() {
           </h2>
           
           {reviews.length === 0 ? (
-            <div className="text-center py-16 bg-gradient-to-br from-white to-neutral-50 rounded-2xl border-2 border-neutral-100">
-              <div className="text-6xl mb-4">💭</div>
+            <div className="text-center py-16 bg-white rounded-2xl border-2 border-neutral-100">
+              <img src="/images/animal.png" alt="리뷰 없음" className="w-20 h-20 mx-auto mb-4 object-contain opacity-60" />
               <p className="text-neutral-500 text-lg">아직 리뷰가 없습니다</p>
               <p className="text-neutral-400 text-sm mt-2">첫 번째 리뷰를 작성해보세요!</p>
             </div>

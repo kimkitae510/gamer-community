@@ -20,6 +20,7 @@ export default function CategoryHeader({ parentCategoryName, selectedGenreId, al
       'PlayStation': '/images/플스-removebg-preview.png',
       'Xbox': '/images/엑스박스-removebg-preview.png',
       'Nintendo': '/images/닌텐도.jpg-removebg-preview.png',
+      'PC': '/images/pc-removebg-preview.png',
     };
     return logos[categoryName] || null;
   };
