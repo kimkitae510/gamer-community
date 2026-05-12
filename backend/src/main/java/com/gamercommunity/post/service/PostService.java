@@ -42,7 +42,7 @@ public class PostService {
     private final PostLikeRepository postLikeRepository;
     private final CommentLikeRepository commentLikeRepository;
 
-    // 게시글 작성 
+    // 게시글 작성
     @Transactional
     public long createPost(PostCreateRequest request, String loginId) {
         User author = findUserByLoginId(loginId);
@@ -83,7 +83,7 @@ public class PostService {
         return post.getId();
     }
 
-    // 게시글 삭제 
+    // 게시글 삭제
     @Transactional
     public void deletePost(Long postId, String loginId) {
         Post post = findActivePostById(postId);
@@ -98,7 +98,7 @@ public class PostService {
         categoryRepository.decrementPostCount(categoryId);
     }
 
-    // 게시글 수정 
+    // 게시글 수정
     @Transactional
     public PostResponse updatePost(Long postId, PostUpdateRequest request, String loginId) {
         Post post = findActivePostById(postId);
@@ -126,7 +126,7 @@ public class PostService {
                 .build();
     }
 
-    // 게시글 단건 조회 
+    // 게시글 단건 조회
     public PostResponse getPost(Long postId) {
         Post post = postRepository.findByIdWithDetails(postId)
                 .orElseThrow(() -> new EntityNotFoundException("게시글", postId));
@@ -138,7 +138,7 @@ public class PostService {
         return PostResponse.from(post);
     }
 
-    // 카테고리별 게시글 목록 
+    // 카테고리별 게시글 목록
     public List<PostResponse> getPostsByCategoryAndSort(Long categoryId, PostSort postSort, Tag tag) {
         validateCategoryExists(categoryId);
 
@@ -148,7 +148,7 @@ public class PostService {
                 .collect(Collectors.toList());
     }
 
-    // 카테고리별 게시글 목록 (페이징) 
+    // 카테고리별 게시글 목록 (페이징)
     public Page<PostResponse> getPostsByCategoryWithPaging(Long categoryId, PostSort postSort, Tag tag, Pageable pageable) {
         validateCategoryExists(categoryId);
 

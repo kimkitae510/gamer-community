@@ -67,7 +67,7 @@ public class PostLikeService {
                 .build();
     }
 
-    // 좋아요 상태 조회 — 단순 SELECT, 트랜잭션 불필요
+    // 좋아요 상태 조회
     public PostLikeResponse getLikeStatus(Long postId, String loginId) {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new EntityNotFoundException("게시글", postId));

@@ -63,7 +63,7 @@ public class ReviewLikeService {
                 .build();
     }
 
-    // 리뷰 목록 좋아요 상태 조회 — 단순 SELECT, 트랜잭션 불필요
+    // 리뷰 목록 좋아요 상태 조회
     public Map<Long, Boolean> getLikeStatus(List<Long> reviewIds, String loginId) {
         List<Long> likedReviewIdList = reviewLikeRepository.findLikedReviewIds(reviewIds, loginId);
         Set<Long> likedReviewIds = new HashSet<>(likedReviewIdList); // List → Set 변환

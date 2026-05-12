@@ -6,7 +6,6 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.LongAdder;
 
-
 @Component
 public class PostViewInMemoryCount {
 
@@ -15,7 +14,7 @@ public class PostViewInMemoryCount {
     //조회수 증가
     public void increment(Long postId) {
         viewCountMap.computeIfAbsent(postId, k -> new LongAdder())
-                    .incrementAndGet();
+                    .increment();
     }
 
     //스냅샷 분리
@@ -29,7 +28,7 @@ public class PostViewInMemoryCount {
     public void merge(Map<Long, LongAdder> failed) {
         failed.forEach((postId, count) ->
             viewCountMap.computeIfAbsent(postId, k -> new LongAdder())
-                        .addAndGet(count.get())
+                        .add(count.sum())
         );
     }
 }

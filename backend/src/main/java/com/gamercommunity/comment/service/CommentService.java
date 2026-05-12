@@ -73,7 +73,7 @@ public class CommentService {
         return comment.getId();
     }
 
-    // 댓글 트리 조회 — JOIN FETCH 한 방 + 단순 SELECT, 트랜잭션 불필요
+    // 댓글 트리 조회
     public List<CommentResponse> getCommentsByPost(Long postId, String loginId) {
         List<Comment> allComments = commentRepository.findByPostIdWithAuthor(postId);
 
@@ -127,7 +127,7 @@ public class CommentService {
         return result;
     }
 
-    // 댓글 삭제 — @Modifying 여러 개 → 트랜잭션 필요
+    // 댓글 삭제
     @Transactional
     public void deleteComment(Long commentId, String loginId) {
         Comment comment = commentRepository.findById(commentId)
@@ -144,7 +144,7 @@ public class CommentService {
         popularScoreService.onCommentDeleted(postId);
     }
 
-    // 댓글 수정 — @Modifying 단건 UPDATE → 트랜잭션 필요 (@Modifying 요구)
+    // 댓글 수정
     @Transactional
     public void updateComment(Long commentId, String content, String loginId) {
         Comment comment = commentRepository.findById(commentId)

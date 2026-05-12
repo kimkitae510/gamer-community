@@ -9,12 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
-// AI 댓글 비동기 생성 서비스
-//
-// @Transactional 없음 — LLM 호출 동안 DB 커넥션 미점유
-// DB 쓰기는 AiCommentWriter의 짧은 트랜잭션에 위임
-//
-// [흐름] 게시글 조회 → LLM 호출 → 댓글 저장 + COMPLETED → 쿼터 차감 → 락 해제
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -25,6 +20,8 @@ public class AiCommentService {
     private final AiCommentWriter aiCommentWriter;
     private final AiUsageService aiUsageService;
 
+
+    //ai 댓글 요청 (비동기)
     @Async("llmExecutor")
     public void generateAiCommentAsync(Long taskId, Long postId, Long userId) {
         try {

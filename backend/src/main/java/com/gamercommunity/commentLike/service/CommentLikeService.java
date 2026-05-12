@@ -23,7 +23,7 @@ public class CommentLikeService {
     private final UserRepository userRepository;
     private final CommentLikeRepository commentLikeRepository;
 
-    // 댓글 좋아요 토글 — save/delete + @Modifying 여러 개 → 트랜잭션 필요
+    // 댓글 좋아요 토글
     @Transactional
     public CommentLikeResponse toggleLike(Long commentId, String loginId) {
         Comment comment = commentRepository.findById(commentId)
@@ -60,7 +60,7 @@ public class CommentLikeService {
                 .build();
     }
 
-    // 개별 댓글 좋아요 상태 조회 — 단순 SELECT, 트랜잭션 불필요
+    // 개별 댓글 좋아요 상태 조회
     public CommentLikeResponse getLikeStatusSingle(Long commentId, String loginId) {
         Comment comment = commentRepository.findById(commentId)
                 .orElseThrow(() -> new EntityNotFoundException("댓글", commentId));
@@ -77,7 +77,7 @@ public class CommentLikeService {
                 .build();
     }
 
-    // 댓글 목록 좋아요 상태 조회 — 단순 SELECT, 트랜잭션 불필요
+    // 댓글 목록 좋아요 상태 조회
     public Map<Long, Boolean> getLikeStatus(List<Long> commentIds, String loginId) {
         Set<Long> likedIds = new HashSet<>(commentLikeRepository.findLikedCommentIds(commentIds, loginId));
 

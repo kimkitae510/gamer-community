@@ -18,28 +18,28 @@ public class PopularScoreService {
 
     private final PopularScoreRepository popularScoreRepository;
 
-    // 댓글 생성 시 호출 (+3점) — @Modifying → 트랜잭션 필요
+    // 댓글 생성 시 호출 (+3점)
     @Transactional
     public void onCommentCreated(Long postId) {
         popularScoreRepository.incrementCommentScoreAtomic(postId);
         log.info("댓글 생성: postId={}, +3점", postId);
     }
 
-    // 댓글 삭제 시 호출 (-3점) — @Modifying → 트랜잭션 필요
+    // 댓글 삭제 시 호출 (-3점)
     @Transactional
     public void onCommentDeleted(Long postId) {
         popularScoreRepository.decrementCommentScoreAtomic(postId);
         log.info("댓글 삭제: postId={}, -3점", postId);
     }
 
-    // 추천 생성 시 호출 (+5점) — @Modifying → 트랜잭션 필요
+    // 추천 생성 시 호출 (+5점)
     @Transactional
     public void onLikeCreated(Long postId) {
         popularScoreRepository.incrementLikeScoreAtomic(postId);
         log.info("추천 생성: postId={}, +5점", postId);
     }
 
-    // 추천 취소 시 호출 (-5점) — @Modifying → 트랜잭션 필요
+    // 추천 취소 시 호출 (-5점)
     @Transactional
     public void onLikeCancelled(Long postId) {
         popularScoreRepository.decrementLikeScoreAtomic(postId);
@@ -52,21 +52,21 @@ public class PopularScoreService {
         popularScoreRepository.updateViewScoreAtCheckpoint(postId);
     }
 
-    // 특정 게시글의 인기점수 조회 — 단건 SELECT, 트랜잭션 불필요
+    // 특정 게시글의 인기점수 조회
     public Integer getScore(Long postId) {
         return popularScoreRepository.findByPostId(postId)
                 .map(PopularScore::getScore)
                 .orElse(0);
     }
 
-    // 실시간 인기글 목록 조회 — 단순 SELECT, 트랜잭션 불필요
+    // 실시간 인기글 목록 조회
     public List<TrendingPostResponse> getTrendingPosts() {
         return popularScoreRepository.findTrendingPosts().stream()
                 .map(TrendingPostResponse::from)
                 .collect(Collectors.toList());
     }
 
-    // 실시간 인기글 상위 10개 조회 — 단순 SELECT, 트랜잭션 불필요
+    // 실시간 인기글 상위 10개 조회
     public List<TrendingPostResponse> getTop10TrendingPosts() {
         return popularScoreRepository.findTopNTrendingPosts(
                 org.springframework.data.domain.PageRequest.of(0, 10)

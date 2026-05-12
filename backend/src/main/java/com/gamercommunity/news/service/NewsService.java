@@ -52,7 +52,7 @@ public class NewsService {
         }
     }
 
-    // 플랫폼별 뉴스 조회 — 단순 SELECT, 트랜잭션 불필요
+    // 플랫폼별 뉴스 조회
     public List<NewsResponse> getNewsByPlatform(Platform platform) {
         if (platform == null) {
             throw new IllegalArgumentException("플랫폼을 지정해주세요.");
@@ -64,7 +64,7 @@ public class NewsService {
                 .collect(Collectors.toList());
     }
 
-    // 전체 뉴스 조회 — 단순 SELECT, 트랜잭션 불필요
+    // 전체 뉴스 조회
     public List<NewsResponse> getAllNews() {
         return newsRepository.findAllByOrderByPublishedAtDesc()
                 .stream()

@@ -59,7 +59,7 @@ public class CategoryStatsService {
         monthlyStatsRepository.upsertPostCount(category.getId(), yearMonth);
     }
 
-    // 오늘 일간 Top 7 조회 — 단순 SELECT, 트랜잭션 불필요
+    // 오늘 일간 Top 7 조회
     public java.util.List<com.gamercommunity.stats.dto.TopCategoryResponse> getDailyTopCategories() {
         java.util.List<com.gamercommunity.stats.entity.CategoryDailyStats> stats = 
             dailyStatsRepository.findTopBoardsByDate(LocalDate.now());
@@ -87,7 +87,7 @@ public class CategoryStatsService {
                 .collect(java.util.stream.Collectors.toList());
     }
 
-    // 이번 주 주간 Top 7 조회 — 단순 SELECT, 트랜잭션 불필요
+    // 이번 주 주간 Top 7 조회
     public java.util.List<com.gamercommunity.stats.dto.TopCategoryResponse> getWeeklyTopCategories() {
         LocalDate today = LocalDate.now();
         WeekFields weekFields = WeekFields.of(Locale.getDefault());
@@ -120,7 +120,7 @@ public class CategoryStatsService {
                 .collect(java.util.stream.Collectors.toList());
     }
 
-    // 이번 달 월간 Top 7 조회 — 단순 SELECT, 트랜잭션 불필요
+    // 이번 달 월간 Top 7 조회
     public java.util.List<com.gamercommunity.stats.dto.TopCategoryResponse> getMonthlyTopCategories() {
         String yearMonth = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM"));
         

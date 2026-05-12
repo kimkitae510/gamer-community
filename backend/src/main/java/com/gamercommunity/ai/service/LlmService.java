@@ -10,7 +10,6 @@ import org.springframework.web.client.RestTemplate;
 import java.util.List;
 import java.util.Map;
 
-//비동기 스레드(llmExecutor)에서 호출, 동기 블로킹 방식 
 @Slf4j
 @Service
 public class LlmService {

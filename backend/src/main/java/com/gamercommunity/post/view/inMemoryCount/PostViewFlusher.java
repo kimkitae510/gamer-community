@@ -11,7 +11,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.LongAdder;
 
-
 @Slf4j
 @Component
 @RequiredArgsConstructor
@@ -61,7 +60,7 @@ public class PostViewFlusher {
         for (Map.Entry<Long, LongAdder> entry : chunk) {
             sql.append("WHEN ? THEN ? ");
             params.add(entry.getKey());
-            params.add(entry.getValue().get());
+            params.add(entry.getValue().sum());
         }
 
         sql.append("END WHERE id IN (");

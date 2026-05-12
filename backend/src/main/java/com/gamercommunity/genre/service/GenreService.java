@@ -52,7 +52,7 @@ public class GenreService {
     }
 
 
-    // 장르 수정 — @Modifying UPDATE → 트랜잭션 필요
+    // 장르 수정
     @Transactional
     public GenreResponse updateGenre(Long genreId, GenreRequest request, String loginId) {
         checkLevel3Permission(loginId);

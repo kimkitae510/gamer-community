@@ -17,6 +17,6 @@ public class DbViewCount implements ViewCount {
     @Override
     public void increment(Long postId, Post post) {
         postRepository.incrementViewCount(postId);
-        //popularScoreService.onPostViewed(postId);
+        popularScoreService.onPostViewed(postId);
     }
 }

@@ -135,7 +135,7 @@ public class ReviewService {
         return ReviewResponse.from(review);
     }
 
-    // 게임별 리뷰 트리 조회 — JOIN FETCH 한 방 + 단순 SELECT, 트랜잭션 불필요
+    // 게임별 리뷰 트리 조회
     public List<ReviewResponse> getReviewsByGame(Long gameId, String loginId) {
         Category game = categoryRepository.findById(gameId)
                 .orElseThrow(() -> new EntityNotFoundException("게임", gameId));

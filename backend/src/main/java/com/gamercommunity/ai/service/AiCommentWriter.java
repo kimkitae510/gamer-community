@@ -14,8 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-// AI 댓글 생성 과정의 DB 쓰기 담당
-// 각 메서드는 짧은 트랜잭션만 점유
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
