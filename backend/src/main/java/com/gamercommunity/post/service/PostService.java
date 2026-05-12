@@ -19,6 +19,7 @@ import com.gamercommunity.postLike.repository.PostLikeRepository;
 import com.gamercommunity.stats.service.CategoryStatsService;
 import com.gamercommunity.user.entity.User;
 import com.gamercommunity.user.repository.UserRepository;
+import com.gamercommunity.post.view.viewCount.ViewCount;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -41,6 +42,7 @@ public class PostService {
     private final CommentRepository commentRepository;
     private final PostLikeRepository postLikeRepository;
     private final CommentLikeRepository commentLikeRepository;
+    private final ViewCount viewCount;
 
     // 게시글 작성
     @Transactional
@@ -121,7 +123,7 @@ public class PostService {
                 .likeCount(post.getLikeCount())
                 .views(post.getViews())
                 .createdAt(post.getCreatedAt().toString())
-                .updatedAt(post.getUpdatedAt().toString())
+                .updatedAt(java.time.LocalDateTime.now().toString())
                 .tag(post.getTag() != null ? post.getTag().toString() : "일반")
                 .build();
     }
@@ -134,6 +136,8 @@ public class PostService {
         if (post.getStatus().isDeleted()) {
             throw new EntityNotFoundException("삭제된 게시글입니다. id=" + postId);
         }
+
+        viewCount.increment(postId, post);
 
         return PostResponse.from(post);
     }

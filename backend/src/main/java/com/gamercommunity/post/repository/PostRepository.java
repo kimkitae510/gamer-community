@@ -49,7 +49,7 @@ public interface PostRepository extends JpaRepository<Post,Long>, PostRepository
 
     // 게시글 제목/내용 수정 (직접 UPDATE)
     @Modifying
-    @Query("UPDATE Post p SET p.title = :title, p.content = :content WHERE p.id = :postId AND p.status = com.gamercommunity.global.enums.ContentStatus.ACTIVE")
+    @Query("UPDATE Post p SET p.title = :title, p.content = :content, p.updatedAt = CURRENT_TIMESTAMP WHERE p.id = :postId AND p.status = com.gamercommunity.global.enums.ContentStatus.ACTIVE")
     int updateTitleAndContent(@Param("postId") Long postId, @Param("title") String title, @Param("content") String content);
 
     // 트랜잭션 없는 단건 조회 (성능 테스트용)
