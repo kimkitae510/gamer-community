@@ -18,7 +18,7 @@ export const categoryService = {
   uploadChildImage: async (childId: number, imageFile: File): Promise<string> => {
     const formData = new FormData();
     formData.append('image', imageFile);
-    const response = await api.put<string>(`/categories/children/${childId}/image/upload`, formData, {
+    const response = await api.patch<string>(`/categories/children/${childId}/image`, formData, {
       headers: { 'Content-Type': 'multipart/form-data' },
     });
     return response.data;
@@ -26,19 +26,19 @@ export const categoryService = {
 
   //< 카테고리 장르 수정
   updateGenres: async (categoryId: number, data: CategoryRequest): Promise<Category> => {
-    const response = await api.put<Category>(`/categories/${categoryId}/genres/update`, data);
+    const response = await api.patch<Category>(`/categories/children/${categoryId}/genres`, data);
     return response.data;
   },
 
   //< 카테고리 이름 수정
   updateName: async (categoryId: number, data: CategoryRequest): Promise<Category> => {
-    const response = await api.put<Category>(`/categories/${categoryId}/name/update`, data);
+    const response = await api.patch<Category>(`/categories/children/${categoryId}/name`, data);
     return response.data;
   },
 
   //< 하위 카테고리 삭제
   deleteChild: async (categoryId: number): Promise<string> => {
-    const response = await api.delete<string>(`/categories/${categoryId}`);
+    const response = await api.delete<string>(`/categories/children/${categoryId}`);
     return response.data;
   },
 

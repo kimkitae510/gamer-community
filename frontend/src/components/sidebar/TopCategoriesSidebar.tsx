@@ -54,10 +54,10 @@ export default function TopCategoriesSidebar({ topCategories, selectedPeriod, on
                   </div>
                   <div className="flex-shrink-0">
                     <img
-                      src={category.imageUrl || '/placeholder-game.jpg'}
+                      src={category.imageUrl || ''}
                       alt={category.categoryName}
                       className="w-14 h-14 rounded object-cover"
-                      onError={(e) => { e.currentTarget.src = '/placeholder-game.jpg'; }}
+                      onError={(e) => { e.currentTarget.onerror = null; e.currentTarget.style.display = 'none'; }}
                     />
                   </div>
                   <div className="flex-1 min-w-0">

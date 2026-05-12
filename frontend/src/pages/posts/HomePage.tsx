@@ -6,7 +6,7 @@ import { Card, CardBody } from "../../components/ui/Card";
 import { Badge } from "../../components/ui/Badge";
 import type { Post, NewsItem, Platform, Category } from "../../api/types";
 import type { TrendingPost } from "../../api/types/trending.types";
-import gameBanner from "../../assets/game.jpg";
+import gameBanner from "../../assets/game.JPG";
 
 const platforms = [
   { label: "전체", value: null as Platform | null },
@@ -346,11 +346,12 @@ export default function HomePage() {
                         {/* 게임 이미지 */}
                         <div className="flex-shrink-0">
                           <img
-                            src={topCategories[0].imageUrl || '/placeholder-game.jpg'}
+                            src={topCategories[0].imageUrl || ''}
                             alt={topCategories[0].categoryName}
                             className="w-16 h-16 rounded object-cover"
                             onError={(e) => {
-                              e.currentTarget.src = '/placeholder-game.jpg';
+                              e.currentTarget.onerror = null;
+                              e.currentTarget.style.display = 'none';
                             }}
                           />
                         </div>
@@ -481,14 +482,15 @@ export default function HomePage() {
                   className="group bg-white rounded-lg overflow-hidden border border-neutral-200 hover:shadow-lg transition-all"
                 >
                   {/* 게임 이미지 */}
-                  <div className="relative aspect-[3/4] bg-neutral-100 overflow-hidden">
+                  <div className="relative aspect-[4/3] bg-neutral-100 overflow-hidden">
                     {category.imageUrl ? (
                       <img
                         src={category.imageUrl}
                         alt={category.name}
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                         onError={(e) => {
-                          e.currentTarget.src = '/placeholder-game.jpg';
+                          e.currentTarget.onerror = null;
+                          e.currentTarget.style.display = 'none';
                         }}
                       />
                     ) : (
@@ -499,17 +501,17 @@ export default function HomePage() {
                   </div>
 
                   {/* 게임 정보 */}
-                  <div className="p-4">
+                  <div className="p-3">
                     {/* 게임명 */}
-                    <h3 className="font-bold text-base text-neutral-900 mb-1.5 line-clamp-2 leading-tight group-hover:text-primary-600 transition-colors min-h-[2.5rem]">
+                    <h3 className="font-bold text-sm text-neutral-900 mb-1 line-clamp-1 leading-tight group-hover:text-primary-600 transition-colors">
                       {category.name}
                     </h3>
 
                     {/* 평점 */}
-                    <div className="mb-1 flex items-center gap-1">
-                      <span className="text-sm text-neutral-600">평점</span>
+                    <div className="mb-0.5 flex items-center gap-1">
+                      <span className="text-xs text-neutral-600">평점</span>
                       <button
-                        className="text-red-600 font-bold text-base hover:text-red-700 hover:underline underline-offset-2 transition-colors"
+                        className="text-red-600 font-bold text-sm hover:text-red-700 hover:underline underline-offset-2 transition-colors"
                         onClick={(e) => {
                           e.preventDefault();
                           e.stopPropagation();
@@ -521,9 +523,9 @@ export default function HomePage() {
                     </div>
 
                     {/* 글 수 */}
-                    <div className="mb-2 flex items-center gap-1">
-                      <span className="text-sm text-neutral-600">글</span>
-                      <span className="font-bold text-neutral-900 text-base">{category.postCount || 0}</span>
+                    <div className="flex items-center gap-1">
+                      <span className="text-xs text-neutral-600">글</span>
+                      <span className="font-bold text-neutral-900 text-sm">{category.postCount || 0}</span>
                     </div>
 
                     {/* 장르 */}

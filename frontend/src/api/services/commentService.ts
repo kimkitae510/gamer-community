@@ -29,12 +29,12 @@ export const commentService = {
 
   //< 댓글 수정
   update: async (commentId: number, content: string): Promise<void> => {
-    await api.put(`/comments/${commentId}`, { content });
+    await api.patch(`/comments/${commentId}`, { content });
   },
 
   //< 게시글별 댓글 목록 조회
   getByPost: async (postId: number): Promise<Comment[]> => {
-    const response = await api.get<any[]>(`/comments/${postId}`);
+    const response = await api.get<any[]>(`/comments/posts/${postId}`);
     return response.data.map(mapCommentResponse);
   },
 };

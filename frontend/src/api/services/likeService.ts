@@ -26,6 +26,15 @@ export const likeService = {
     return response.data;
   },
 
+  //< 댓글 좋아요 상태 벨크 조회 (한 번에 여러 댓글)
+  getCommentLikeStatusBulk: async (commentIds: number[]): Promise<Record<number, boolean>> => {
+    if (commentIds.length === 0) return {};
+    const response = await api.get<Record<number, boolean>>('/comments/like-status', {
+      params: { commentIds: commentIds.join(',') },
+    });
+    return response.data;
+  },
+
   //< 리뷰 좋아요 토글
   toggleReviewLike: async (reviewId: number): Promise<LikeResponse> => {
     const response = await api.post<LikeResponse>(`/reviews/${reviewId}/like`);

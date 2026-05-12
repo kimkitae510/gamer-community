@@ -314,11 +314,12 @@ export default function CategoryBoardPage() {
                           {/* 게임 이미지 */}
                           <div className="flex-shrink-0">
                             <img
-                              src={category.imageUrl || '/placeholder-game.jpg'}
+                              src={category.imageUrl || ''}
                               alt={category.name}
                               className="w-12 h-12 rounded object-cover"
                               onError={(e) => {
-                                e.currentTarget.src = '/placeholder-game.jpg';
+                                e.currentTarget.onerror = null;
+                                e.currentTarget.style.display = 'none';
                               }}
                             />
                           </div>

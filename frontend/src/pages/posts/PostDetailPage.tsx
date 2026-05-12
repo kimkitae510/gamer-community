@@ -25,6 +25,7 @@ export default function PostDetailPage() {
   const { trendingPosts, topCategories, selectedPeriod, handlePeriodChange } = useSidebarData();
   const [aiAnswer, setAiAnswer] = useState<string | null>(null);
   const [aiLoading, setAiLoading] = useState(false);
+  const [aiStatus, setAiStatus] = useState<string>('');
   const navigate = useNavigate();
 
   //< 게시글 + 사용자 + 좋아요 상태 조회
@@ -104,16 +105,21 @@ export default function PostDetailPage() {
     navigate(`/${categoryName}/game/${subCategoryId}`);
   };
 
-  //< AI 답변 요청
+  //< AI 답변 요청 (폴링 방식)
   const askAi = async () => {
     if (!numericPostId) return;
     setAiLoading(true);
     setAiAnswer(null);
+    setAiStatus('PENDING');
     try {
-      const answer = await aiService.askAi(numericPostId);
+      const answer = await aiService.askAi(numericPostId, (status) => {
+        setAiStatus(status);
+      });
       setAiAnswer(answer);
+      setAiStatus('COMPLETED');
     } catch {
       setAiAnswer("AI 답변을 가져오는 데 실패했습니다. 잠시 후 다시 시도해주세요.");
+      setAiStatus('FAILED');
     } finally {
       setAiLoading(false);
     }
@@ -225,7 +231,8 @@ export default function PostDetailPage() {
                 </div>
               </div>
 
-              {/* AI에게 물어보기 */}
+              {/* AI에게 물어보기 - 질문 태그 게시글 작성자에게만 표시 */}
+              {post.tag === '질문' && currentUser === post.authorId && (
               <div className="mb-6 rounded-xl overflow-hidden border border-gray-200 shadow-sm">
                 <div className="flex items-center gap-3 px-4 py-3 bg-slate-800">
                   <div className="w-8 h-8 rounded-lg bg-slate-700 flex items-center justify-center flex-shrink-0">
@@ -262,7 +269,7 @@ export default function PostDetailPage() {
                           <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/>
                           <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"/>
                         </svg>
-                        답변 생성 중...
+                        {aiStatus === 'PENDING' ? 'AI가 생각 중...' : '답변 생성 중...'}
                       </span>
                     ) : aiAnswer ? "다시 물어보기" : "AI 답변 받기"}
                   </button>
@@ -278,6 +285,7 @@ export default function PostDetailPage() {
                   </div>
                 )}
               </div>
+              )}
 
               {/* 좋아요 */}
               <div className="text-center">

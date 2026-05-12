@@ -16,7 +16,7 @@ export const postService = {
 
   //< 게시글 수정
   update: async (postId: number, data: PostRequest): Promise<Post> => {
-    const response = await api.put<Post>(`/posts/${postId}`, data);
+    const response = await api.patch<Post>(`/posts/${postId}`, data);
     return response.data;
   },
 
@@ -35,7 +35,7 @@ export const postService = {
     number: number;
   }> => {
     const { categoryId, sort = 'LATEST', tag, page = 0 } = params;
-    const response = await api.get(`/posts/category/${categoryId}/paged`, {
+    const response = await api.get(`/posts/category/${categoryId}`, {
       params: { sort, tag: tag || undefined, page },
     });
     return response.data;

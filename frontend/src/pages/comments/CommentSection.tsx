@@ -33,23 +33,43 @@ export default function CommentSection({ postId, postAuthorName, commentCount, o
     }
   };
 
+  const collectAllCommentIds = (list: Comment[]): number[] => {
+    const ids: number[] = [];
+    for (const c of list) {
+      if (c.author && c.author !== "알 수 없음") ids.push(c.id);
+      if (c.replies) ids.push(...collectAllCommentIds(c.replies));
+    }
+    return ids;
+  };
+
+  const attachLikeStatusFromMap = (list: Comment[], likeMap: Record<number, boolean>): Comment[] =>
+    list.map((c) => ({
+      ...c,
+      isLiked: likeMap[c.id] || false,
+      replies: c.replies ? attachLikeStatusFromMap(c.replies, likeMap) : [],
+    }));
+
   const fetchCommentsWithLikeStatus = async (loginId: string | null) => {
     try {
       const commentList = await commentService.getByPost(postId);
-      const attachLikeStatus = async (list: Comment[]): Promise<Comment[]> =>
-        Promise.all(list.map(async (c) => {
-          let isLiked = false;
-          if (loginId && c.author && c.author !== "알 수 없음") {
-            try {
-              const s = await likeService.getCommentLikeStatus(c.id);
-              isLiked = s.isLiked ?? s.liked ?? false;
-            } catch { isLiked = false; }
-          }
-          return { ...c, isLiked, replies: c.replies ? await attachLikeStatus(c.replies) : [] };
-        }));
-      const updated = await attachLikeStatus(commentList);
-      setComments(updated);
-      if (onCommentCountChange) onCommentCountChange(getTotalComments(updated));
+
+      if (loginId) {
+        // 벨크 조회: 한 번의 API 호출로 모든 댓글 좋아요 상태 조회
+        const allIds = collectAllCommentIds(commentList);
+        let likeMap: Record<number, boolean> = {};
+        if (allIds.length > 0) {
+          try {
+            likeMap = await likeService.getCommentLikeStatusBulk(allIds);
+          } catch { /* 비로그인 등 */ }
+        }
+        const updated = attachLikeStatusFromMap(commentList, likeMap);
+        setComments(updated);
+        if (onCommentCountChange) onCommentCountChange(getTotalComments(updated));
+      } else {
+        const updated = commentList.map(c => ({ ...c, isLiked: false, replies: c.replies?.map(r => ({ ...r, isLiked: false })) || [] }));
+        setComments(updated);
+        if (onCommentCountChange) onCommentCountChange(getTotalComments(updated));
+      }
     } catch {
       setComments([]);
     }

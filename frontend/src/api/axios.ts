@@ -3,8 +3,8 @@ import axios, { AxiosHeaders } from "axios";
 import useAuthStore from "../store/auth";
 
 const api = axios.create({
-  baseURL: "http://localhost:8081/api",  // ✅ 수정
-  withCredentials: true,  // ✅ 추가 (쿠키 전송)
+  baseURL: "/api",  // 수정
+  withCredentials: true,  // 추가 (쿠키 전송)
   headers: { "Content-Type": "application/json" },
 });
 
