@@ -1,0 +1,51 @@
+name: Deploy to EC2
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Build jar
+        run: chmod +x gradlew && ./gradlew bootJar
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build and push Backend image
+        run: |
+          docker build -t kimkitae510/gamercommunity-backend:latest .
+          docker push kimkitae510/gamercommunity-backend:latest
+
+      - name: Build and push Frontend image
+        run: |
+          docker build -t kimkitae510/gamercommunity-frontend:latest ./frontend
+          docker push kimkitae510/gamercommunity-frontend:latest
+
+      - name: Deploy to EC2
+        uses: appleboy/ssh-action@v1
+        with:
+          host: 100.51.108.228
+          username: ec2-user
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            docker pull kimkitae510/gamercommunity-backend:latest
+            docker pull kimkitae510/gamercommunity-frontend:latest
+            cd ~
+            docker-compose down
+            docker-compose up -d
