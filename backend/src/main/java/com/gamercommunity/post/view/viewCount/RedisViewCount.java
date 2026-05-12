@@ -10,7 +10,6 @@ import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component
-@Primary
 @RequiredArgsConstructor
 public class RedisViewCount implements ViewCount {
 
