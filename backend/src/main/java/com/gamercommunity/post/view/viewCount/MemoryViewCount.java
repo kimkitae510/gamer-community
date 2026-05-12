@@ -3,9 +3,10 @@ package com.gamercommunity.post.view.viewCount;
 import com.gamercommunity.post.entity.Post;
 import com.gamercommunity.post.view.inMemoryCount.PostViewInMemoryCount;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
 
-//@Primary
+@Primary
 @Component
 @RequiredArgsConstructor
 public class MemoryViewCount implements ViewCount {
