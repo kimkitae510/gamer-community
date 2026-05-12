@@ -100,7 +100,6 @@ src/main/java/com/gamercommunity/
 ├── news/                  # 뉴스 크롤링 + 스케줄러
 ├── popular/               # 실시간 인기글 점수
 ├── post/                  # 게시글
-│   ├── repository/        # QueryDSL 동적 쿼리
 │   └── view/              # 조회수 전략 (DB / InMemory / Redis)
 ├── postLike/              # 게시글 추천
 ├── review/                # 리뷰 (낙관적 락 / 비관적 락 / 집계 컬럼)
