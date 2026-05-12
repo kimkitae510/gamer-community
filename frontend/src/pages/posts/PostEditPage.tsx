@@ -123,7 +123,7 @@ export default function PostEditPage() {
     return (
       <div className="min-h-screen bg-white flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin w-8 h-8 border-2 border-neutral-200 border-t-blue-500 rounded-full mx-auto mb-4"></div>
+          <div className="animate-spin w-8 h-8 border-2 border-neutral-200 border-t-primary-600 rounded-full mx-auto mb-4"></div>
           <p className="text-neutral-600">게시글을 불러오는 중...</p>
         </div>
       </div>
@@ -158,7 +158,7 @@ export default function PostEditPage() {
                 onClick={() => setSelectedTag(tag.name)}
                 className={`p-4 rounded-xl border-2 transition-all text-left ${
                   selectedTag === tag.name
-                    ? "border-blue-500 bg-blue-50"
+                    ? "border-primary-500 bg-primary-50"
                     : "border-neutral-200 bg-white hover:border-neutral-300"
                 }`}
               >
@@ -178,7 +178,7 @@ export default function PostEditPage() {
             </label>
             <input
               type="text"
-              className="w-full px-4 py-3 border border-neutral-300 rounded-xl focus:border-blue-500 focus:ring-2 focus:ring-blue-100 focus:outline-none transition-all"
+              className="w-full px-4 py-3 border border-neutral-300 rounded-xl focus:border-primary-500 focus:ring-2 focus:ring-primary-100 focus:outline-none transition-all"
               placeholder="제목을 입력하세요"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
@@ -195,7 +195,7 @@ export default function PostEditPage() {
               내용
             </label>
             <textarea
-              className="w-full px-4 py-3 border border-neutral-300 rounded-xl focus:border-blue-500 focus:ring-2 focus:ring-blue-100 focus:outline-none transition-all resize-none"
+              className="w-full px-4 py-3 border border-neutral-300 rounded-xl focus:border-primary-500 focus:ring-2 focus:ring-primary-100 focus:outline-none transition-all resize-none"
               placeholder="내용을 입력하세요"
               rows={15}
               value={content}
@@ -222,7 +222,7 @@ export default function PostEditPage() {
             className={`px-6 py-3 font-medium rounded-xl ${
               submitting
                 ? "bg-neutral-300 text-neutral-500 cursor-not-allowed"
-                : "bg-blue-500 text-white hover:bg-blue-600"
+                : "bg-gradient-to-r from-primary-600 to-primary-700 text-white hover:from-primary-700 hover:to-primary-800"
             }`}
           >
             {submitting ? "수정 중..." : "수정 완료"}
