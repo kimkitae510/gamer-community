@@ -108,7 +108,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/api/comments/**").permitAll()
 
                         // 리뷰 조회 (GET만 허용)
-                        .requestMatchers(HttpMethod.GET, "/api/reviews/game/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/reviews/games/**").permitAll()
 
                         // AI (전체 공개)
                         .requestMatchers("/api/ai/**").permitAll()
