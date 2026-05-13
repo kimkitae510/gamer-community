@@ -203,7 +203,7 @@ export default function CategoryBoardPage() {
   // ================= Xbox 스타일 깔끔한 레이아웃 =================
   return (
     <div className="min-h-screen bg-neutral-50">
-      <div className="max-w-[1800px] mx-auto px-8">
+      <div className="max-w-[1800px] mx-auto px-4 md:px-8">
         <div className="flex gap-8">
           {/* 왼쪽: 필터 사이드바 */}
           <aside className="w-[280px] flex-shrink-0 hidden lg:block py-8">

@@ -269,7 +269,7 @@ export default function GameReviewPage() {
   return (
     <div className="min-h-screen bg-neutral-50">
       {/* 히어로 이미지 섹션 */}
-      <div className="relative h-[600px] overflow-hidden bg-black">
+      <div className="relative h-[350px] sm:h-[450px] md:h-[600px] overflow-hidden bg-black">
         {/* 배경 이미지 */}
         <div className="absolute inset-0">
           <img 
@@ -282,42 +282,42 @@ export default function GameReviewPage() {
         </div>
 
         {/* 컨텐츠 */}
-        <div className="relative container-custom h-full flex flex-col justify-end pb-16">
+        <div className="relative container-custom h-full flex flex-col justify-end pb-8 sm:pb-12 md:pb-16">
           <div className="max-w-5xl">
             {/* 게임 타이틀 */}
-            <h1 className="text-5xl md:text-6xl font-bold mb-8 text-white drop-shadow-2xl">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 sm:mb-8 text-white drop-shadow-2xl">
               {gameName || "게임 리뷰"}
             </h1>
 
             {/* 통계 카드들 */}
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-3 sm:gap-4">
               {/* 평점 */}
-              <div className="bg-white/95 backdrop-blur-md rounded-xl px-7 py-4 shadow-2xl border border-white/20">
-                <div className="text-sm font-medium text-neutral-600 mb-1">평점</div>
-                <div className="text-4xl font-black text-primary-600">{gameRating.toFixed(1)}</div>
+              <div className="bg-white/95 backdrop-blur-md rounded-xl px-4 sm:px-7 py-3 sm:py-4 shadow-2xl border border-white/20">
+                <div className="text-xs sm:text-sm font-medium text-neutral-600 mb-1">평점</div>
+                <div className="text-2xl sm:text-4xl font-black text-primary-600">{gameRating.toFixed(1)}</div>
               </div>
 
               {/* 리뷰 */}
-              <div className="bg-white/95 backdrop-blur-md rounded-xl px-7 py-4 shadow-2xl border border-white/20">
-                <div className="text-sm font-medium text-neutral-600 mb-1">리뷰</div>
-                <div className="text-4xl font-black text-neutral-900">{gameRatingCount}</div>
+              <div className="bg-white/95 backdrop-blur-md rounded-xl px-4 sm:px-7 py-3 sm:py-4 shadow-2xl border border-white/20">
+                <div className="text-xs sm:text-sm font-medium text-neutral-600 mb-1">리뷰</div>
+                <div className="text-2xl sm:text-4xl font-black text-neutral-900">{gameRatingCount}</div>
               </div>
 
               {/* 게시글 */}
-              <div className="bg-white/95 backdrop-blur-md rounded-xl px-7 py-4 shadow-2xl border border-white/20">
-                <div className="text-sm font-medium text-neutral-600 mb-1">게시글</div>
-                <div className="text-4xl font-black text-neutral-900">{gamePostCount}</div>
+              <div className="bg-white/95 backdrop-blur-md rounded-xl px-4 sm:px-7 py-3 sm:py-4 shadow-2xl border border-white/20">
+                <div className="text-xs sm:text-sm font-medium text-neutral-600 mb-1">게시글</div>
+                <div className="text-2xl sm:text-4xl font-black text-neutral-900">{gamePostCount}</div>
               </div>
             </div>
           </div>
         </div>
       </div>
 
-      <div className="container-custom py-8 md:py-12">
+      <div className="container-custom py-6 md:py-8 md:py-12">
 
         {/* 리뷰 작성 */}
         {!hasUserReviewed && (
-          <div className="bg-white rounded-2xl p-8 shadow-md border border-neutral-200 mb-8">
+          <div className="bg-white rounded-2xl p-5 sm:p-8 shadow-md border border-neutral-200 mb-8">
             <h2 className="text-2xl font-bold text-neutral-900 mb-6">
               리뷰 작성하기
             </h2>

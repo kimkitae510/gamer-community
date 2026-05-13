@@ -155,7 +155,7 @@ export default function PostDetailPage() {
 
   return (
     <div className="min-h-screen bg-neutral-50">
-      <div className="max-w-[1400px] ml-32 px-4 py-8">
+      <div className="max-w-[1400px] mx-auto lg:ml-32 px-4 py-6 md:py-8">
         <div className="flex gap-6">
           {/* 왼쪽 사이드바 */}
           <aside className="hidden lg:block w-80 flex-shrink-0 space-y-6" style={{ marginTop: '40px' }}>
@@ -168,7 +168,7 @@ export default function PostDetailPage() {
           </aside>
 
           {/* 메인 컨텐츠 */}
-          <main className="w-full max-w-4xl ml-8">
+          <main className="w-full max-w-4xl lg:ml-8">
             {/* 뒤로가기 */}
             <button
               onClick={goBack}

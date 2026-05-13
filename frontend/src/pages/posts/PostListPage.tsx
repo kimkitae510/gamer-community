@@ -197,7 +197,7 @@ export default function PostListPage() {
 
   return (
     <div className="min-h-screen bg-neutral-50">
-      <div className="max-w-[1400px] ml-32 px-4 py-8">
+      <div className="max-w-[1400px] mx-auto lg:ml-32 px-4 py-6 md:py-8">
         <div className="flex gap-6">
           {/* 왼쪽 사이드바 */}
           <aside className="hidden lg:block w-80 flex-shrink-0 space-y-6">
@@ -210,12 +210,12 @@ export default function PostListPage() {
           </aside>
 
           {/* 메인 컨텐츠 */}
-          <main className="w-full max-w-4xl ml-8">
+          <main className="w-full max-w-4xl lg:ml-8">
             {/* 헤더 */}
             <div className="bg-white rounded-xl shadow-sm border border-neutral-200 p-6 mb-6">
-              <div className="flex items-center justify-between mb-4">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-4 gap-3">
                 <div>
-                  <h1 className="text-3xl font-bold text-neutral-900 mb-2">{categoryNameDisplay}</h1>
+                  <h1 className="text-2xl sm:text-3xl font-bold text-neutral-900 mb-2">{categoryNameDisplay}</h1>
                   <div className="flex items-center gap-4">
                     {/* 평점 표시 */}
                     <Link
@@ -244,14 +244,14 @@ export default function PostListPage() {
               
               {/* 필터 바 */}
               <div className="border-t border-neutral-200 pt-4">
-                <div className="flex items-center justify-between">
+                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
                   {/* 태그 필터 */}
-                  <div className="flex gap-2">
+                  <div className="flex gap-2 overflow-x-auto pb-1 w-full sm:w-auto">
                     {TAGS.map(tag => (
                       <button
                         key={tag}
                         onClick={() => handleTagClick(tag)}
-                        className={`px-4 py-2 text-sm font-medium transition-all rounded-lg ${
+                        className={`px-3 sm:px-4 py-2 text-sm font-medium transition-all rounded-lg whitespace-nowrap ${
                           selectedTagFilter === tag 
                             ? "bg-primary-600 text-white shadow-md" 
                             : "bg-neutral-100 text-neutral-700 hover:bg-neutral-200"
@@ -263,7 +263,7 @@ export default function PostListPage() {
                   </div>
 
                   {/* 정렬 + 글쓰기 */}
-                  <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-3 w-full sm:w-auto">
                     <select
                       value={selectedSort}
                       onChange={(e) => handleSortClick(e.target.value as PostSort)}
