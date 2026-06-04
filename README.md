@@ -4,7 +4,7 @@
 
 > **Live**: [http://100.51.108.228](http://100.51.108.228/) (배포 서버 - 현재 운영 x)
  
-> **Blog**: [dogtae.tistory.com](https://dogtae.tistory.com/) (프로젝트 진행중 발생한 문제와 해결과정 기록)
+> **Blog**: [dogtae.tistory.com](https://dogtae.tistory.com/)
 ---
 
 
